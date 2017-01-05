@@ -4,8 +4,6 @@ Get Record
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.getRecord({
 		Entity : "Leads",
 		RecordID : "1000000033001"
@@ -21,8 +19,6 @@ Get Page information
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.getPageInfo()
 	.then(function(data)
 	{
@@ -35,8 +31,6 @@ AddNotes
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.addNotes({	
 		Entity : "Leads", 
 		RecordID : "1000000033001",
