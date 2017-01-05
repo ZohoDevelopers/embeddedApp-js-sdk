@@ -1,0 +1,17 @@
+plugins {
+    id 'com.eriwen.gradle.js' version '2.14.1'
+}
+
+import com.eriwen.gradle.js.tasks.MinifyJsTask
+task minifyJS << {
+
+    task temp (type: MinifyJsTask) {
+      	source = fileTree('lib/')
+      	dest = "${buildDir}/js/ZohoCrmEmbededApp.min.js"
+	closure {
+		warningLevel = 'QUIET'
+		compilerOptions.languageIn = 'ECMASCRIPT5'
+	}
+    }
+    tasks.temp.execute()
+}
