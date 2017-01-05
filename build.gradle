@@ -7,7 +7,7 @@ task minifyJS << {
 
     task temp (type: MinifyJsTask) {
       	source = fileTree('lib/')
-      	dest = "${buildDir}/js/ZohoCrmEmbededApp.min.js"
+      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
 	closure {
 		warningLevel = 'QUIET'
 		compilerOptions.languageIn = 'ECMASCRIPT5'
