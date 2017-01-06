@@ -1,11 +1,22 @@
+To register Listeners with sdk
+--
+	TelephonyInit - Triggered everytime softphone window is toggled
+	TelephonyCall - Triggered when Call icon inside ZohoCRM is clicked
+	EntityPageLoad - Triggered When ever an entity Page (Detail page) is loaded
+--
+	ZOHO.embededApp.init({
+		events:{
+			TelephonyInit:Handler.widgetInit,
+			TelephonyCall:Handler.initiateCall,
+			EntityPageLoad:Handler.entityPageLoad
+		},
+	});
 Sample Implementations
 ---
 Get Record
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.getRecord({
 		Entity : "Leads",
 		RecordID : "1000000033001"
@@ -21,8 +32,6 @@ Get Page information
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.getPageInfo()
 	.then(function(data)
 	{
@@ -35,8 +44,6 @@ AddNotes
 ---
 
 ```
-#!Javascript
-
 ZOHO.CRM.addNotes({	
 		Entity : "Leads", 
 		RecordID : "1000000033001",
