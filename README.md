@@ -6,9 +6,9 @@ To register Listeners with sdk
 --
 	ZOHO.embededApp.init({
 		events:{
-			TelephonyInit:Handler.widgetInit,
-			TelephonyCall:Handler.initiateCall,
-			EntityPageLoad:Handler.entityPageLoad
+			TelephonyInit:<function>,
+			TelephonyCall:<function>,
+			EntityPageLoad:<function>
 		},
 	});
 Sample Implementations
