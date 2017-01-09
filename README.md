@@ -55,3 +55,20 @@ ZOHO.CRM.addNotes({
 		console.log(data);
 	});
 ```
+
+---
+UI
+---
+Maximize Telephony popup
+```
+ZOHO.CRM.UI.telephony.maximize();
+```
+
+Minimize Telephony popup
+```
+ZOHO.CRM.UI.telephony.minimize();
+```
+Notify User 
+```
+ZOHO.CRM.UI.telephony.notify()
+```
