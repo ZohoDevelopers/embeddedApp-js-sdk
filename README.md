@@ -72,3 +72,6 @@ Notify User
 ```
 ZOHO.CRM.UI.telephony.notify()
 ```
+
+Help Doc
+https://s3.amazonaws.com/widget-help-doc/index.html
