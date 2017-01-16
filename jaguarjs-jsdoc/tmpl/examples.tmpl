@@ -1,5 +1,9 @@
 <?js
 	var data = obj;
+    var htmlsafe = function(str) {
+        return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;');
+    };
     data.forEach(function(example) {
         if (example.caption) {
     ?>
@@ -7,7 +11,7 @@
     <?js } ?>
 
     <?js if (example.code.toString().indexOf('<pre>') === -1) { ?>
-    <pre class="prettyprint"><code><?js= example.code ?></code></pre>
+    <pre class="prettyprint"><code><?js= htmlsafe(example.code) ?></code></pre>
     <?js } else { ?>
     <?js= example.code.replace(/<pre>/g, '<pre class="prettyprint">') ?>
     <?js } ?>
