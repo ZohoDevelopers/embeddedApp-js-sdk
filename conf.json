@@ -1,0 +1,23 @@
+{
+    	"tags": {
+       		 "allowUnknownTags": true,
+      	 	 "dictionaries": ["jsdoc","closure"]
+   	 },	
+	"source": {
+		"include": ["lib"],
+		"includePattern": ".+\\.js(doc|x)?$"
+	},
+	"templates": {
+        	"cleverLinks": false,
+        	"monospaceLinks": false,
+ 		"applicationName": "ZohoCRM Helper",
+    		"meta": {
+       			 "title": "Naresh Title",
+      			 "description": "Naresh Desc",
+       			 "keyword": "iDai"
+   		 } 
+ 	},
+	"opts":{
+		"template":"jaguarjs-jsdoc/"
+	}
+}

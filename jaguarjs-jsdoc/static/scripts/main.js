@@ -26,7 +26,7 @@ $(function () {
 
     // Toggle when click an item element
     $('.navigation').on('click', '.title', function (e) {
-        $(this).parent().find('.itemMembers').toggle();
+        //$(this).parent().find('.itemMembers').toggle();
     });
 
     // Show an item related a current documentation automatically
@@ -35,8 +35,8 @@ $(function () {
 
     if ($currentItem.length) {
         $currentItem
-            .remove()
-            .prependTo('.navigation .list')
+//            .remove()
+ //           .prependTo('.navigation .list')
             .show()
             .find('.itemMembers')
                 .show();
