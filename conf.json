@@ -10,14 +10,13 @@
 	"templates": {
         	"cleverLinks": false,
         	"monospaceLinks": false,
- 		"applicationName": "ZohoCRM Helper",
+ 		"applicationName": "JS SDK",
     		"meta": {
-       			 "title": "Naresh Title",
-      			 "description": "Naresh Desc",
-       			 "keyword": "iDai"
-   		 } 
+       			 "title": "ZOHO CRM SDK",
+   		 }
  	},
 	"opts":{
-		"template":"jaguarjs-jsdoc/"
+		"template":"jaguarjs-jsdoc/",
+		"readme":"README.md"
 	}
 }

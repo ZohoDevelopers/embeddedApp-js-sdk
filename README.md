@@ -1,77 +1,31 @@
-To register Listeners with sdk
---
-	TelephonyInit - Triggered everytime softphone window is toggled
-	TelephonyCall - Triggered when Call icon inside ZohoCRM is clicked
-	EntityPageLoad - Triggered When ever an entity Page (Detail page) is loaded
+To register Listeners with EmbededApp
 --
 	ZOHO.embededApp.init({
 		events:{
-			TelephonyInit:<function>,
-			TelephonyCall:<function>,
-			EntityPageLoad:<function>
+			DialerActive:<function>,
+			Dial:<function>,
+			PageLoad:<function>
 		},
 	});
-Sample Implementations
----
-Get Record
----
 
-```
-ZOHO.CRM.getRecord({
-		Entity : "Leads",
-		RecordID : "1000000033001"
-	})
-	.then(function(data)
-	{
-		console.log(data);
+Description
+--
+	DialerActive 	- Triggered everytime softphone window is toggled
+	Dial 			- Triggered when Call icon inside ZohoCRM is clicked
+	PageLoad 		- Triggered When ever an entity Page (Detail page) is loaded
+
+Example
+--
+	ZOHO.embededApp.init({
+		events:{
+			DialerActive:function(){
+				alert("Telephony Dialer Activated");
+			},
+			Dial:function(data){
+				alert("Call initiated from CRM");
+			},
+			PageLoad:function(data){
+				alert("Entity Detail Page Loaded");
+			},
+		},
 	});
-```
-
----
-Get Page information
----
-
-```
-ZOHO.CRM.getPageInfo()
-	.then(function(data)
-	{
-		console.log(data);
-	});
-```
-
----
-AddNotes
----
-
-```
-ZOHO.CRM.addNotes({	
-		Entity : "Leads", 
-		RecordID : "1000000033001",
-		Title : "Notes Title",
-		Content : "Notes Content",
-	})
-	.then(function(data)
-	{
-		console.log(data);
-	});
-```
-
----
-UI
----
-Maximize Telephony popup
-```
-ZOHO.CRM.UI.telephony.maximize();
-```
-
-Minimize Telephony popup
-```
-ZOHO.CRM.UI.telephony.minimize();
-```
-Notify User 
-```
-ZOHO.CRM.UI.telephony.notify()
-```
-
-Help Doc
-https://s3.amazonaws.com/widget-help-doc/index.html
