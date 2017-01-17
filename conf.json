@@ -13,6 +13,7 @@
  		"applicationName": "JS SDK",
     		"meta": {
        			 "title": "ZOHO CRM SDK",
+			 "description":"JS SDK lib for ZOHO CRM"
    		 }
  	},
 	"opts":{

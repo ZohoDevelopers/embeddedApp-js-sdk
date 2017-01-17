@@ -1,3 +1,6 @@
+JS SDK lib
+---
+	https://github.com/ZohoDevelopers/embeddedApp-js-sdk/releases/download/0.4/ZohoEmbededAppSDK.min.js
 To register Listeners with EmbededApp
 --
 	ZOHO.embededApp.init({
