@@ -11,6 +11,7 @@
         	"cleverLinks": false,
         	"monospaceLinks": false,
  		"applicationName": "JS SDK",
+		"sort": false,
     		"meta": {
        			 "title": "ZOHO CRM SDK",
 			 "description":"JS SDK lib for ZOHO CRM"
@@ -18,6 +19,7 @@
  	},
 	"opts":{
 		"template":"jaguarjs-jsdoc/",
-		"readme":"README.md"
+		"readme":"README.md",
+		"sort": false
 	}
 }
