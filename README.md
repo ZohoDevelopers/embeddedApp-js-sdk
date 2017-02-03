@@ -9,13 +9,11 @@ To register Listeners with EmbededApp
 			Dial:<function>,
 			PageLoad:<function>
 		},
-	});
-
-Widget onReadyEvent
---
-	ZOHO.embededApp.onReady = function(){
-		console.log("EmbeddedApp is Ready");
-	}
+		}).then(function(){
+			ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
+				console.log(data);
+			});
+		});
 Description
 --
 	DialerActive 	- Triggered everytime softphone window is toggled
