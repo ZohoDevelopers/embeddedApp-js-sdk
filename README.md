@@ -3,17 +3,17 @@ JS SDK lib
 	https://github.com/ZohoDevelopers/embeddedApp-js-sdk/releases
 To register Listeners with EmbededApp
 --
-	ZOHO.embededApp.init({
-		events:{
-			DialerActive:<function>,
-			Dial:<function>,
-			PageLoad:<function>
-		},
-		}).then(function(){
-			ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
-				console.log(data);
-			});
-		});
+
+	ZOHO.embeddedApp.on("DialerActive",function(){
+			console.log("Dialer Activated");
+	})
+	ZOHO.embeddedApp.on("Dial",function(){
+			console.log("Number Dialed");
+	})
+	ZOHO.embeddedApp.on("PageLoad",function(){
+			console.log("Page Loaded");
+	})
+	
 Description
 --
 	DialerActive 	- Triggered everytime softphone window is toggled
@@ -22,16 +22,10 @@ Description
 
 Example
 --
-	ZOHO.embededApp.init({
-		events:{
-			DialerActive:function(){
-				alert("Telephony Dialer Activated");
-			},
-			Dial:function(data){
-				alert("Call initiated from CRM");
-			},
-			PageLoad:function(data){
-				alert("Entity Detail Page Loaded");
-			},
-		},
-	});
+	ZOHO.embeddedApp.init()
+	.then(function(){
+			return ZOHO.CRM.CONFIG.getCurrentUser()
+	})
+	.then(function(data){
+		console.log(data);
+	})
