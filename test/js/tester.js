@@ -19,16 +19,12 @@ var customMatchers = {
 describe("ZOHO.CRM.API Insert Record", function() {
 var testID = undefined;
   beforeEach(function(done) {
-    //jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+	console.log("before each");
     jasmine.addMatchers(customMatchers);
-    ZOHO.embeddedApp.init()
-    .then(function(){
-              done();
-    })
+    done();
   }); 
   
   it("Record Action", function(done) {
-
     var recordData = {
       "Company": "Zylker",
       "Last_Name": "Peterson"
@@ -41,7 +37,7 @@ var testID = undefined;
           done();
       }
       testID  = data[0].details.id;
-    return ZOHO.CRM.API.getRecord({Entity:"Leads",RecordID:testID})
+    return ZOHO.CRM.API.getRecord({Entity:"Leads",RecordID:testID+1})
     }).then(function(data){
       console.log(data);
       if(!data || data.id != testID)
