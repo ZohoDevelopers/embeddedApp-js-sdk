@@ -1,56 +1,71 @@
-var customMatchers = {
-    toCheckCM: function(util, customEqualityTesters) {
-    return {  
-      compare: function(actual, expected) {
-        var result = {};
-        if(actual==expected){
-          result.pass = true;
-        }
-        else{
-          result.pass=false;
-          result.message = "po da dai";
-        }
-        return result;
-      }
-    };
-  }
-};
-
-describe("ZOHO.CRM.API Insert Record", function() {
-var testID = undefined;
-  beforeEach(function(done) {
-	console.log("before each");
-    jasmine.addMatchers(customMatchers);
-    done();
-  }); 
-  
-  it("Record Action", function(done) {
-    var recordData = {
-      "Company": "Zylker",
-      "Last_Name": "Peterson"
-    };
-    ZOHO.CRM.API.insertRecord({Entity:"Leads",APIData:recordData})
-    .then(function(data){
-      if(!data || !data[0] || data[0].code != "SUCCESS")
-      {
-          expect(true).toCheckCM(false);
-          done();
-      }
-      testID  = data[0].details.id;
-    return ZOHO.CRM.API.getRecord({Entity:"Leads",RecordID:testID+1})
-    }).then(function(data){
-      console.log(data);
-      if(!data || data.id != testID)
-      {
-          expect(true).toCheckCM(false);
-      }
-      else
-      {
-        expect(true).toCheckCM(true);
-      }
-      done();
-    }).catch(function(){
-      console.log("worst case da dai");
-    });
-  });
-})
+describe("JS SDK TestCase", function() {
+	var TestSpec={};
+	beforeAll(function(done) {
+		ZOHO.embeddedApp.init()
+		.then(function(){
+			done();
+		});
+	});
+	   var originalTimeout;
+	    beforeEach(function() {
+	        originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+	        jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+	    });
+	    afterEach(function() {
+	        jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+	    });
+	it("Fetches all record from Leads", function(done) {
+	    
+		  ZOHO.CRM.API.getAllRecords({Entity:"Leads"})
+			.then(function(data){
+				console.log(data);
+				if(data && typeof(data) === 'object' && data instanceof Array ){
+					expect(true).toBe(true);
+				}
+				else
+				{
+					expect(true).toBe(false);        
+				}
+				done();
+			})
+	  });
+	  
+	  it("Insert Record into Leads", function(done) {
+		  var recordData = {
+					"Company": "Zylker",
+					"Last_Name": "Peterson"
+			}
+			ZOHO.CRM.API.insertRecord({Entity:"Leads",APIData:recordData})
+			.then(function(data){
+				console.log(data);
+				if(data && typeof(data) === 'object' && data[0] && data[0].code==='SUCCESS'){
+					TestSpec.leadID = data[0].details.id;
+					expect(true).toBe(true);
+				}
+				else
+				{
+					expect(true).toBe(false);        
+				}
+				done();
+			})
+		  });
+	  it("Delete Record from Leads", function(done) {
+		  if(!TestSpec.leadID){
+			  expect(true).toBe(false);
+			  done();
+		  }
+		  ZOHO.CRM.API.deleteRecord({Entity:"Leads",RecordID: TestSpec.leadID})
+			.then(function(data){
+				console.log(data);
+				if(data && typeof(data) === 'object' && data[0] && data[0].code==='SUCCESS'){
+					expect(true).toBe(true);
+				}
+				else
+				{
+					expect(true).toBe(false);        
+				}
+				delete TestSpec.leadID; 
+				done();
+			})
+		  });
+});
