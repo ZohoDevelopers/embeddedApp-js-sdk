@@ -18,7 +18,9 @@ dependencies {
 
 task minifyJS << {
     task temp (type: MinifyJsTask) {
-      	source = fileTree('lib/')
+      	source = fileTree('lib/'){
+      		include '**/*.js'
+      	}
       	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
 	closure {
 		warningLevel = 'QUIET'
