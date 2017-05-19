@@ -72,3 +72,30 @@ TestCases.getRecord = function(module,recordID,recordData,callBack){
 			})
 		  }
 };
+TestCases.getUser = function(userID,callBack){
+		  if(!userID)
+		  {
+		  	ZOHO.CRM.API.getAllUsers({Type:"AllUsers"})
+				.then(function(data){
+				    if(data && data.length && data.length > 0 ){
+						callBack(true,data[0].id);
+				    }
+				    else{
+				    	callBack(false);
+				    }
+				});
+		  }
+		  else
+		  {
+			ZOHO.CRM.API.getUser({ID:userID})
+				.then(function(data){
+					if(data && data.id == userID){
+						callBack(true);
+					}
+					else
+					{
+						callBack(false);
+					}
+				})
+		  }
+};

@@ -4,7 +4,8 @@ describe("SDK Testing", function() {
 		recordData : {
 		        "Company": "Zylker",
 		        "Last_Name": "Peterson"
-		  }
+		  },
+		userID:undefined
 	};
 	beforeAll(function(done) 
 	{
@@ -70,4 +71,29 @@ describe("SDK Testing", function() {
 		  	done();
 		  });
   	});
+  	it("getAll Users", function(done)
+	{
+		  TestCases.getUser(undefined,function(result,userID){
+		  	TestSpec.userID = userID;
+			expect(result).toBe(true);
+		  	done();
+		  });
+  	});
+  	it("getUserByID", function(done)
+	{
+		if(!TestSpec.userID){
+			expect(true).toBe(false);
+		}
+		else
+		{
+			TestCases.getUser(TestSpec.userID,function(result){
+				expect(result).toBe(true);
+		  		done();
+		  	});	
+		}
+		  
+  	});
+
+
+
 });
