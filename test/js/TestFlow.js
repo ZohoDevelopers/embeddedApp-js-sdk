@@ -10,6 +10,13 @@ describe("SDK Testing", function() {
 	beforeAll(function(done) 
 	{
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+		ZOHO.embeddedApp.on("DialerActive",function(){
+		console.log("Dialer Activated");
+		})
+		ZOHO.embeddedApp.on("Dial",function(number){
+				console.log(number);
+				console.log("Number Dialed");
+		})
 		ZOHO.embeddedApp.init()
 		.then(function()
 		{
