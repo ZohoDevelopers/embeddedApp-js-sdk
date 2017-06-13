@@ -7,4 +7,5 @@ out/
 HelpDoc.zip
 server.zip
 temp
+tempImpl/
 test/lib/*
