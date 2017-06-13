@@ -73,22 +73,25 @@ $(document).ready(function(){
     var url = $(this).attr('href');
     $('div.main').load(url+" .main>",function(){
             window.prettyPrint();
+            var hasTag = url.split("#");
+            if(hasTag.length == 2 ){
+                $('html, body').animate({
+                     scrollTop: $("#\\"+hasTag[1]).offset().top
+                }, 500);
+            }else {
+                $('html, body').animate({
+                     scrollTop: $(".main").offset().top
+                }, 10);
+            }    
+            });
+            if(url!=window.location){
+                window.history.pushState({path:url},'',url);
+            }
+            e.preventDefault();
     });
-    if(url!=window.location){
-        window.history.pushState({path:url},'',url);
-    }
-    e.preventDefault();
-    var hasTag = url.split("#");
-    if(hasTag.length == 2 ){
-        $('html, body').animate({
-             scrollTop: $("#\\"+hasTag[1]).offset().top
-        }, 500);
-    }else {
-        $('html, body').animate({
-             scrollTop: $(".main").offset().top
-        }, 10);
-    }    
-    });
+
+    
+
 });
 
 $(window).load(function(e) {             
