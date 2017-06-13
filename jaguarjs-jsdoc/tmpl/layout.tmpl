@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+
     <title><?js= ((env.conf.templates.meta && env.conf.templates.meta.title) || title) ?></title>
     <?js if (env.conf.templates.meta) { ?>
     <?js if (env.conf.templates.meta.description) { ?><meta name="description" content="<?js= env.conf.templates.meta.description ?>" /><?js } ?>
@@ -26,7 +27,8 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
-    
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+
     <?js if (env.conf.templates) { ?>
     <script>
     var config = <?js= JSON.stringify(env.conf.templates) ?>;

@@ -46,6 +46,11 @@ module.exports = function (grunt) {
                 tasks: ['copy:js']
             },
 
+            imgcopy: {
+                files: ['static/img/favicon.ico'],
+                tasks: ['copy:img']
+            },
+
             jsdoc: {
                 files: ['**/*.tmpl', '*.js'],
                 tasks: ['jsdoc']
@@ -97,7 +102,12 @@ module.exports = function (grunt) {
             js: {
                 src: 'static/scripts/main.js',
                 dest: DEMO_PATH + '/scripts/main.js'
+            },
+            img: {
+                src: 'static/img/favicon.ico',
+                dest: DEMO_PATH + 'main.js'
             }
+
         }
     });
 
