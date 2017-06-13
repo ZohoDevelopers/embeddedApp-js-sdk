@@ -26,7 +26,8 @@ $(function () {
 
     // Toggle when click an item element
     $('.navigation').on('click', '.title', function (e) {
-        $(this).parent().find('.itemMembers').toggle();
+        $('.itemMembers').stop().slideUp();
+        $(this).parent().find('.itemMembers').stop().slideDown();
     });
 
     // Show an item related a current documentation automatically
@@ -66,4 +67,37 @@ $(function () {
             document.getElementsByTagName('BODY')[0].appendChild(s);
         });
     }
+});
+$(document).ready(function(){
+    $('a').bind('click', function(e) {           
+    var url = $(this).attr('href');
+    $('div.main').load(url+" .main>",function(){
+            window.prettyPrint();
+    });
+    if(url!=window.location){
+        window.history.pushState({path:url},'',url);
+    }
+    e.preventDefault();
+    var hasTag = url.split("#");
+    if(hasTag.length == 2 ){
+        $('html, body').animate({
+             scrollTop: $("#\\"+hasTag[1]).offset().top
+        }, 500);
+    }else {
+        $('html, body').animate({
+             scrollTop: $(".main").offset().top
+        }, 10);
+    }    
+    });
+});
+
+$(window).load(function(e) {             
+    var url = location.href;
+    $('div.main').load(url+" .main>",function(){
+            window.prettyPrint();
+    });
+    if(url!=window.location){
+        window.history.pushState({path:url},'',url);
+    }    
+    e.preventDefault();
 });

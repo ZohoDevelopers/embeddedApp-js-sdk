@@ -4,11 +4,19 @@ describe("SDK Testing", function() {
 		recordData : {
 		        "Company": "Zylker",
 		        "Last_Name": "Peterson"
-		  }
+		  },
+		userID:undefined
 	};
 	beforeAll(function(done) 
 	{
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+		ZOHO.embeddedApp.on("DialerActive",function(){
+		console.log("Dialer Activated");
+		})
+		ZOHO.embeddedApp.on("Dial",function(number){
+				console.log(number);
+				console.log("Number Dialed");
+		})
 		ZOHO.embeddedApp.init()
 		.then(function()
 		{
@@ -70,4 +78,29 @@ describe("SDK Testing", function() {
 		  	done();
 		  });
   	});
+  	it("getAll Users", function(done)
+	{
+		  TestCases.getUser(undefined,function(result,userID){
+		  	TestSpec.userID = userID;
+			expect(result).toBe(true);
+		  	done();
+		  });
+  	});
+  	it("getUserByID", function(done)
+	{
+		if(!TestSpec.userID){
+			expect(true).toBe(false);
+		}
+		else
+		{
+			TestCases.getUser(TestSpec.userID,function(result){
+				expect(result).toBe(true);
+		  		done();
+		  	});	
+		}
+		  
+  	});
+
+
+
 });
