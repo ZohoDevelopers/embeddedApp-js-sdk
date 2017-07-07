@@ -99,3 +99,109 @@ TestCases.getUser = function(userID,callBack){
 				})
 		  }
 };
+TestCases.getOrgVariable = function(variableName,callBack)
+{
+	ZOHO.CRM.CONFIG.getOrgVariable(variableName).then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+			{
+				callBack(false);
+			}
+	});
+}
+TestCases.checkHttpRequest = function(url,callBack){
+	var request ={
+		url : url
+	}
+	ZOHO.CRM.HTTP.get(request).then(function(httpData){
+		var httpData = httpData;
+    	ZOHO.CRM.HTTP.get(request).then(function(httpsData){
+    		var httpsData = httpsData;
+    		if(httpData && httpsData)
+    		{
+    			callBack(true);
+    		}
+    		else
+    		{
+    			callBack(false)
+    		}
+    	});
+	});
+}
+TestCases.getFields = function(module,callBack){
+	ZOHO.CRM.META.API.getFields({Entity:module}).then(function(result){
+		if(result)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getModules = function(module,callBack){
+	ZOHO.CRM.META.API.getModules({Entity:module}).then(function(result){
+		if(result)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getAssignmentRules = function(module,callBack){
+	ZOHO.CRM.META.API.getAssignmentRules({Entity:module}).then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getCurrentUser = function(callBack){
+	ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getOrgInfo = function(callBack)
+{
+	ZOHO.CRM.CONFIG.getOrgInfo().then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.Search = function(module,type,query,callBack){
+	ZOHO.CRM.API.searchRecord({Entity:module,Type:type,Query:query})
+	.then(function(data){
+	    if(data)
+	   	{
+	   		callBack(true);
+	   	}
+	   	else
+	   	{
+	   		callBack(false);
+	   	}
+	})
+}

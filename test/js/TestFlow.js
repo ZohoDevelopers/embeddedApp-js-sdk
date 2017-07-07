@@ -5,7 +5,9 @@ describe("SDK Testing", function() {
 		        "Company": "Zylker",
 		        "Last_Name": "Peterson"
 		  },
-		userID:undefined
+		userID:undefined,
+		orgVariable:"unittest.testvariable",
+		url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c"
 	};
 	beforeAll(function(done) 
 	{
@@ -100,7 +102,53 @@ describe("SDK Testing", function() {
 		}
 		  
   	});
-
-
+  	it("getOrgVariable",function(done){
+  		TestCases.getOrgVariable(TestSpec.orgVariable,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("checkHtttpRequst",function(done){
+  		TestCases.checkHttpRequest(TestSpec.url,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getFields",function(done){
+  		TestCases.getFields("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getModules",function(done){
+  		TestCases.getModules("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getAssignmentRules",function(done){
+  		TestCases.getAssignmentRules("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getCurrentUser",function(done){
+  		TestCases.getCurrentUser(function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getOrgInfo",function(done){
+  		TestCases.getOrgInfo(function(result){
+  			expect(result).toBe(true);
+  			done();
+  		})
+  	});
+  	it("searchRecord",function(done){
+  		TestCases.Search("Leads","email","uk@gmail.com",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
 
 });
