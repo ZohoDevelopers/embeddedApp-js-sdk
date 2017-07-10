@@ -6,8 +6,11 @@ describe("SDK Testing", function() {
 		        "Last_Name": "Peterson"
 		  },
 		userID:undefined,
-		orgVariable:"unittest.testvariable",
-		url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c"
+		orgVariable:"unittest0.token",
+		url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
+		connector:"unittest0.unittest.getfiles",
+		fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
+		connectorFile : "unittest0.unittest.getfile"
 	};
 	beforeAll(function(done) 
 	{
@@ -150,5 +153,16 @@ describe("SDK Testing", function() {
   			done();
   		});
   	});
-
+  	it("invokeConnectorWithoutDynamic",function(done){
+  		TestCases.invokeConnectorWithoutDynamic(TestSpec.connector,{},function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("invokeConnectorWithoutDynamicValue",function(done){
+  		TestCases.invokeConnectorwithDynamic(TestSpec.connectorFile,{fileId:TestSpec.fileId},function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
 });

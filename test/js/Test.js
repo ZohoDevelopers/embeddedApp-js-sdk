@@ -102,7 +102,7 @@ TestCases.getUser = function(userID,callBack){
 TestCases.getOrgVariable = function(variableName,callBack)
 {
 	ZOHO.CRM.CONFIG.getOrgVariable(variableName).then(function(data){
-		if(data)
+		if(data || data.Success || data.Error)
 		{
 			callBack(true);
 		}
@@ -204,4 +204,30 @@ TestCases.Search = function(module,type,query,callBack){
 	   		callBack(false);
 	   	}
 	})
+}
+TestCases.invokeConnectorWithoutDynamic = function(apiname,data,callBack){
+	ZOHO.CRM.CONNECTOR.invokeAPI(apiname,{})
+	.then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.invokeConnectorwithDynamic = function(apiname,data,callBack){
+	ZOHO.CRM.CONNECTOR.invokeAPI(apiname,data)
+	.then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
 }
