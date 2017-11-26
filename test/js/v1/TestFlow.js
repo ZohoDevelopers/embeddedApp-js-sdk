@@ -28,14 +28,13 @@ describe("SDK Testing", function() {
 			done();
 		});
 	});
-
 	/*
-	 * Get All records with no data
+	 * Get All records
 	 */
 	it("getAll with No Data", function(done)
 	{
 		  TestCases.getAllRecord(function(result){
-			expect(result).toBe(false);
+			expect(result).toBe(true);
 		  	done();
 		  });
   	});
@@ -75,13 +74,6 @@ describe("SDK Testing", function() {
 			expect(result).toBe(true);
 			done();
 		});
-  	});
-  	it("getAll with No Data", function(done)
-	{
-		  TestCases.getAllRecord(function(result){
-			expect(result).toBe(false);
-		  	done();
-		  });
   	});
   	it("getAll Users", function(done)
 	{
@@ -149,6 +141,14 @@ describe("SDK Testing", function() {
   	});
   	it("searchRecord",function(done){
   		TestCases.Search("Leads","email","uk@gmail.com",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
+
+	fit("unAuthenticated Invoke Connector",function(done){
+  		TestCases.invokeUnAuthConnector(function(result){
   			expect(result).toBe(true);
   			done();
   		});

@@ -4,7 +4,7 @@ TestCases.getAllRecord = function(callBack)
 {
 		ZOHO.CRM.API.getAllRecords({Entity:"Leads"})
 			.then(function(data){
-				if(data && typeof(data) === 'object' && data instanceof Array )
+				if(data && typeof(data) === 'object' && data.data instanceof Array  && data.info instanceof Object)
 				{
 					callBack(true);
 				}
@@ -18,8 +18,9 @@ TestCases.insertRecord=function(module,recordData,callBack)
 {
 			ZOHO.CRM.API.insertRecord({Entity:module,APIData:recordData})
 			.then(function(data){
-				if(data && typeof(data) === 'object' && data[0] && data[0].code==='SUCCESS'){
-					leadID = data[0].details.id;
+				if(data && typeof(data) === 'object' && data.data && data.data instanceof Array && data.data.length > 0 && data.data[0].code==='SUCCESS'){
+					var recordData = data.data[0];
+					leadID = recordData.details.id;
 					callBack(true,leadID);
 				}
 				else
@@ -36,7 +37,7 @@ TestCases.deleteRecord=function(module,recordID,callBack){
 
 			  ZOHO.CRM.API.deleteRecord({Entity:module,RecordID: recordID})
 				.then(function(data){
-					if(data && typeof(data) === 'object' && data[0] && data[0].code==='SUCCESS'){
+					if(data && typeof(data) === 'object' && data.data && data.data instanceof Array && data.data.length > 0 && data.data[0].code==='SUCCESS'){
 						callBack(true);
 					}
 					else
@@ -54,11 +55,12 @@ TestCases.getRecord = function(module,recordID,recordData,callBack){
 		  else{
 		  	ZOHO.CRM.API.getRecord({Entity:module,RecordID:recordID})
 			.then(function(data){
-				if(data && typeof(data) === 'object' )
+				if(data && data.data && data.data instanceof Array && data.data.length > 0 )
 				{
+					var recordData = data.data[0];
 					for(field in recordData){
 
-						if(recordData[field] == data[field]){
+						if(recordData[field] == recordData[field]){
 							continue
 						}
 						callBack(false);			
@@ -77,8 +79,10 @@ TestCases.getUser = function(userID,callBack){
 		  {
 		  	ZOHO.CRM.API.getAllUsers({Type:"AllUsers"})
 				.then(function(data){
-				    if(data && data.length && data.length > 0 ){
-						callBack(true,data[0].id);
+
+					if(data && data instanceof Object && data.users instanceof Array  && data.info instanceof Object && data.users instanceof Array && data.users.length >0){
+						var userData = data.users[0];
+						callBack(true,userData.id);
 				    }
 				    else{
 				    	callBack(false);
@@ -89,7 +93,7 @@ TestCases.getUser = function(userID,callBack){
 		  {
 			ZOHO.CRM.API.getUser({ID:userID})
 				.then(function(data){
-					if(data && data.id == userID){
+					if(data && data instanceof Object && data.users instanceof Array  && data.users instanceof Array && data.users.length >0){
 						callBack(true);
 					}
 					else
@@ -204,6 +208,17 @@ TestCases.Search = function(module,type,query,callBack){
 	   		callBack(false);
 	   	}
 	})
+}
+TestCases.invokeUnAuthConnector = function(callBack){
+	debugger;
+	ZOHO.CRM.CONNECTOR.invokeAPI("UnAuthConnectorNameSpace",{})
+	.then(function(data){
+			callBack(false);
+	})
+	.catch(function(e){
+		
+		callBack(true);
+	});
 }
 TestCases.invokeConnectorWithoutDynamic = function(apiname,data,callBack){
 	ZOHO.CRM.CONNECTOR.invokeAPI(apiname,{})
