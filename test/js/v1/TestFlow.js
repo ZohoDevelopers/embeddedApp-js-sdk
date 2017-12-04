@@ -15,12 +15,23 @@ describe("SDK Testing", function() {
 	beforeAll(function(done) 
 	{
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
-		ZOHO.embeddedApp.on("DialerActive",function(){
-		console.log("Dialer Activated");
+		ZOHO.embeddedApp.on("DialerActive",function(data){
+			console.log("----------------------");
+			console.log("Dialer Activated");
+			console.log(data);
+			console.log("----------------------");
+		})
+		ZOHO.embeddedApp.on("PageLoad",function(data){
+			console.log("----------------------");
+			console.log("PageLoaded");
+			console.log(data);
+			console.log("----------------------");
 		})
 		ZOHO.embeddedApp.on("Dial",function(number){
-				console.log(number);
+				console.log("----------------------");
 				console.log("Number Dialed");
+				console.log(number);
+				console.log("----------------------");
 		})
 		ZOHO.embeddedApp.init()
 		.then(function()
@@ -31,7 +42,7 @@ describe("SDK Testing", function() {
 	/*
 	 * Get All records
 	 */
-	it("getAll with No Data", function(done)
+	it("getAll Records", function(done)
 	{
 		  TestCases.getAllRecord(function(result){
 			expect(result).toBe(true);
@@ -147,7 +158,7 @@ describe("SDK Testing", function() {
   	});
 
 
-	fit("unAuthenticated Invoke Connector",function(done){
+	it("unAuthenticated Invoke Connector",function(done){
   		TestCases.invokeUnAuthConnector(function(result){
   			expect(result).toBe(true);
   			done();

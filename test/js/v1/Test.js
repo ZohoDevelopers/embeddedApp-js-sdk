@@ -210,7 +210,6 @@ TestCases.Search = function(module,type,query,callBack){
 	})
 }
 TestCases.invokeUnAuthConnector = function(callBack){
-	debugger;
 	ZOHO.CRM.CONNECTOR.invokeAPI("UnAuthConnectorNameSpace",{})
 	.then(function(data){
 			callBack(false);
