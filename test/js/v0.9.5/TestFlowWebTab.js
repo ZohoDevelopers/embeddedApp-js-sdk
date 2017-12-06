@@ -54,9 +54,9 @@ describe("SDK Testing", function() {
 	/*
 	 * Getch The Lead using the RecordID and verify its data
 	 */
-	it("get Lead", function(done)
+	it("verify inserted Lead", function(done)
 	{
-		TestCases.getRecord("Leads",TestSpec.recordID,TestSpec.recordData,function(result){
+		TestCases.verifyRecord("Leads",TestSpec.recordID,TestSpec.recordData,function(result){
 			expect(result).toBe(true);
 			done();
 		});

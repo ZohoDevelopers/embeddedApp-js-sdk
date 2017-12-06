@@ -47,7 +47,7 @@ TestCases.deleteRecord=function(module,recordID,callBack){
 		  }
 		  
 };
-TestCases.getRecord = function(module,recordID,recordData,callBack){
+TestCases.verifyRecord = function(module,recordID,recordData,callBack){
 		  if(!recordID){
 				callBack(false);
 		  }

@@ -1,0 +1,51 @@
+<html>
+<head>
+  <link rel="import" href="include.html">
+<script>
+function runTest(){
+	var sdkVersion = $("#sdkVersion").val();
+	var testCollection = $("#testCollection").val();
+	if(testCollection !== 'NONE')
+	{
+		initiateTestSequence('../js/'+sdkVersion+'/',testCollection);			
+	}
+	
+}
+function initiateTestSequence(testDir,testCollection)
+{
+	require.config({
+		baseUrl: testDir
+	});
+	require(['ZohoEmbededAppSDK.min','Test','TestFlow'+testCollection], function () {
+	 	jasmine.getEnv().execute();
+	});
+}
+$(document).ready(function(){
+	var url = new URL(window.location.href);
+	var typeParam = url.searchParams.get("type");
+	if(typeParam){
+		$("#testCollection").val(typeParam);	
+		runTest();
+	}
+});
+</script>
+</head>
+<body>
+	<body>
+	<div style="margin-bottom: 20px;">
+    <select id="sdkVersion">
+    	<option value="v1">v1</option>
+    	<option value="v0.9.5">v0.9.5</option>
+    </select>
+    <select id="testCollection">
+    	<option value="NONE">None</option>
+    	<option value="WebTab">WebTab</option>
+    	<option value="RelatedList">RelatedList</option>
+    	<option value="CustomButtonView">CustomButton View</option>
+    	<option value="CustomButtonCreate">CustomButton Create</option>
+    	<option value="CustomButtonList">CustomButton List</option>
+    </select>
+    <button onclick="runTest()">Run Test</button>
+	</div>
+</body>
+</html>

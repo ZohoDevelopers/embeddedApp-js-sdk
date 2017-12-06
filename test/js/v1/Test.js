@@ -1,4 +1,40 @@
-const TestCases ={};
+var TestSpec={
+	recordID:undefined,
+	userID:undefined,
+	onLoadData:undefined,
+	recordData : {
+	        "Company": "Zylker",
+	        "Last_Name": "Peterson",	
+	        "Annual_Revenue":"500",
+	        "Description":"Populating test data",
+	        "Phone":"85663655785"
+	  },
+	orgVariable:"unittest0.token",
+	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
+	connector:"unittest0.unittest.getfiles",
+	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
+	connectorFile : "unittest0.unittest.getfile"
+};
+const TestCases ={
+		
+};
+
+TestCases.getMultipleRecord = function(module,recordIDs,callBack)
+{
+		ZOHO.CRM.API.getRecord({Entity:module,RecordID:recordIDs})
+			.then(function(response)
+			{
+				if(response && typeof(response) === 'object' && response.data instanceof Array  && response.info instanceof Object && response.data.length === recordIDs.length)
+				{
+					callBack(true);
+				}
+				else
+				{
+					callBack(false);
+				}
+			})
+};
+
 
 TestCases.getAllRecord = function(callBack)
 {
@@ -48,7 +84,7 @@ TestCases.deleteRecord=function(module,recordID,callBack){
 		  }
 		  
 };
-TestCases.getRecord = function(module,recordID,recordData,callBack){
+TestCases.verifyRecord = function(module,recordID,recordData,callBack){
 		  if(!recordID){
 				callBack(false);
 		  }
@@ -73,6 +109,39 @@ TestCases.getRecord = function(module,recordID,recordData,callBack){
 
 			})
 		  }
+};
+TestCases.getRecord = function(module,recordID,callBack){
+	  if(!recordID){
+			callBack(false);
+	  }
+	  else{
+	  	ZOHO.CRM.API.getRecord({Entity:module,RecordID:recordID})
+		.then(function(data){
+			if(data && data.data && data.data instanceof Array && data.data.length > 0 )
+			{
+				callBack(true);
+			}
+			else{
+					callBack(false);
+			}
+		})
+	  }
+};
+TestCases.validateForm = function(formData,callBack){
+			if(formData && formData instanceof Object)
+			{
+				for(field in TestSpec.recordData)
+				{
+					if(TestSpec.recordData[field] == formData.Data[field]){
+						continue
+					}
+					callBack( false );			
+				}
+				callBack( true );
+			}
+			else{
+				callBack( false );
+			}
 };
 TestCases.getUser = function(userID,callBack){
 		  if(!userID)
@@ -120,20 +189,20 @@ TestCases.checkHttpRequest = function(url,callBack){
 	var request ={
 		url : url
 	}
-	ZOHO.CRM.HTTP.get(request).then(function(httpData){
-		var httpData = httpData;
-    	ZOHO.CRM.HTTP.get(request).then(function(httpsData){
-    		var httpsData = httpsData;
-    		if(httpData && httpsData)
-    		{
-    			callBack(true);
-    		}
-    		else
-    		{
-    			callBack(false)
-    		}
-    	});
+	
+	ZOHO.CRM.HTTP.get(request).then(function(responseData)
+	{
+		var response = JSON.parse(responseData);
+		if(response && response.foo && response.foo === "Hello Word")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false)
+		}
 	});
+	
 }
 TestCases.getFields = function(module,callBack){
 	ZOHO.CRM.META.API.getFields({Entity:module}).then(function(result){

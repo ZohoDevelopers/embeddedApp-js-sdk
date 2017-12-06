@@ -1,41 +1,21 @@
 describe("SDK Testing", function() {
-	var TestSpec={
-		recordID:undefined,
-		recordData : {
-		        "Company": "Zylker",
-		        "Last_Name": "Peterson"
-		  },
-		userID:undefined,
-		orgVariable:"unittest0.token",
-		url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
-		connector:"unittest0.unittest.getfiles",
-		fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
-		connectorFile : "unittest0.unittest.getfile"
-	};
 	beforeAll(function(done) 
 	{
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
-		ZOHO.embeddedApp.on("DialerActive",function(data){
-			console.log("----------------------");
-			console.log("Dialer Activated");
-			console.log(data);
-			console.log("----------------------");
-		})
-		ZOHO.embeddedApp.on("PageLoad",function(data){
-			console.log("----------------------");
-			console.log("PageLoaded");
-			console.log(data);
-			console.log("----------------------");
-		})
-		ZOHO.embeddedApp.on("Dial",function(number){
-				console.log("----------------------");
-				console.log("Number Dialed");
-				console.log(number);
-				console.log("----------------------");
-		})
 		ZOHO.embeddedApp.init()
 		.then(function()
 		{
+			done();
+		});
+	});
+  	/*
+	 * Insert a new Record into the system
+	 */
+	it("Insert Lead", function(done)
+	{
+		TestCases.insertRecord("Leads",TestSpec.recordData,function(result,recordID){
+			TestSpec.recordID = recordID;
+			expect(result).toBe(true);
 			done();
 		});
 	});
@@ -49,36 +29,16 @@ describe("SDK Testing", function() {
 		  	done();
 		  });
   	});
-  	/*
-	 * Insert a new Record into the system
-	 */
-	it("Insert Lead", function(done)
-	{
-		TestCases.insertRecord("Leads",TestSpec.recordData,function(result,recordID){
-			TestSpec.recordID = recordID;
-			expect(result).toBe(true);
-			done();
-		});
-	});
 	/*
 	 * Getch The Lead using the RecordID and verify its data
 	 */
-	it("get Lead", function(done)
+	it("verify inserted Lead", function(done)
 	{
-		TestCases.getRecord("Leads",TestSpec.recordID,TestSpec.recordData,function(result){
+		TestCases.verifyRecord("Leads",TestSpec.recordID,TestSpec.recordData,function(result){
 			expect(result).toBe(true);
 			done();
 		});
 	});
-
-
-	it("getAll with Data", function(done)
-	{
-		  TestCases.getAllRecord(function(result){
-			expect(result).toBe(true);
-		  	done();
-		  });
-  	});
 	it("Delete Lead", function(done)
 	{
 		TestCases.deleteRecord("Leads",TestSpec.recordID,function(result){
