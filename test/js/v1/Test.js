@@ -1,3 +1,7 @@
+function testCompleted(done){
+	$("#TestStatus").text("Test Completed");
+	done();
+}
 var TestSpec={
 	recordID:undefined,
 	userID:undefined,

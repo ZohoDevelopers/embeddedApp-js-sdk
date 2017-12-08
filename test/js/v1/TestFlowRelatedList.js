@@ -8,6 +8,7 @@ describe("SDK Testing", function() {
 		})
 		ZOHO.embeddedApp.init()
 	});
+	afterAll(testCompleted);
 	/*
 	 * Getch The Lead using the RecordID and verify its data
 	 */

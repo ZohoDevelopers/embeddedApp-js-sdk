@@ -8,6 +8,7 @@ describe("SDK Testing", function() {
 			done();
 		});
 	});
+  afterAll(testCompleted);
   	/*
 	 * Insert a new Record into the system
 	 */
