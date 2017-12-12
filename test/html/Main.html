@@ -1,13 +1,16 @@
 <html>
 <head>
-    <link rel="import" href="include.html">
-  <!--
-    <script type="text/javascript" src="../build/js/ZohoEmbededAppSDK.min.js"></script>
-  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="../../lib/ZSDK.js"></script>
   <script type="text/javascript" src="../../lib/ZohoCrmHelper.js"></script> 
-<input type="file" id="file">
 </head>
 <body>
+<script>
+ZOHO.embeddedApp.on("PageLoad",function(data){
+	console.log("pageLoad Data");
+	console.log(data);
+})
+ZOHO.embeddedApp.init()
+</script>
 </body>
 </html>
