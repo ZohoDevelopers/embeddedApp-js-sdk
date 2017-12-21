@@ -17,12 +17,27 @@ describe("SDK Testing", function() {
 	/*
 	 * Getch The Lead using the RecordID and verify its data
 	 */
-	it("get current Record Info", function(done)
+	it("EditPage", function(done)
 	{
-		var onloadData = TestSpec.onLoadData;
-		TestCases.getMultipleRecord(onloadData.Entity,onloadData.EntityId,function(result){
-			expect(result).toBe(true);
-			done();
-		});
+		var url = new URL(window.location.href);
+		var actionType = url.searchParams.get("action");
+		
+		
+		if(actionType === 'verify')
+		{
+			TestCases.validateForm(TestSpec.onLoadData,function(result){
+				expect(result).toBe(true);
+				done();
+			});	
+		}
+		else if(actionType === 'populate')
+		{
+			ZOHO.CRM.UI.Record.populate(TestSpec.recordData)
+			.then(function(data){
+				expect(data).toBe(true);
+				done();
+			})
+			
+		}
 	});
 });

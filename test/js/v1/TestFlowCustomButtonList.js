@@ -3,6 +3,11 @@ describe("SDK Testing", function() {
 	{
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
 		ZOHO.embeddedApp.on("PageLoad",function(data){
+			console.log("------------------------------")
+			console.log("on Load data")
+			console.log("------------------------------")
+			console.log(data)
+			console.log("------------------------------")
 			TestSpec.onLoadData = data;
 			done();
 		})
