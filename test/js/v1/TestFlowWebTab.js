@@ -1,7 +1,7 @@
 describe("SDK Testing", function() {
 	beforeAll(function(done) 
 	{
-		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+3		jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 		ZOHO.embeddedApp.init()
 		.then(function()
 		{
@@ -69,12 +69,18 @@ describe("SDK Testing", function() {
 		}
 		  
   	});
-  	it("getOrgVariable",function(done){
-  		TestCases.getOrgVariable(TestSpec.orgVariable,function(result){
+  	it("getOrgVariable1",function(done){
+  		TestCases.getOrgVariable(TestSpec.orgVariable1,function(result){
   			expect(result).toBe(true);
   			done();
   		});
   	});
+    it("getOrgVariable2",function(done){
+      TestCases.getOrgVariable(TestSpec.orgVariable2,function(result){
+        expect(result).toBe(true);
+        done();
+      });
+    });
   	it("checkHtttpRequst",function(done){
   		TestCases.checkHttpRequest(TestSpec.url,function(result){
   			expect(result).toBe(true);
@@ -99,6 +105,25 @@ describe("SDK Testing", function() {
   			done();
   		});
   	});
+  	it("getAssignmentRules",function(done){
+  		TestCases.getAssignmentRules("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getAssignmentRules",function(done){
+  		TestCases.getAssignmentRules("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("getAssignmentRules",function(done){
+  		TestCases.getAssignmentRules("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+//  	----------
   	it("getCurrentUser",function(done){
   		TestCases.getCurrentUser(function(result){
   			expect(result).toBe(true);
@@ -117,8 +142,54 @@ describe("SDK Testing", function() {
   			done();
   		});
   	});
+  	
+  	it("customViews",function(done){
+  		TestCases.getCustomViews(undefined,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	
+  	it("customView",function(done){
+  		TestCases.getCustomViews(TestSpec.customViewID,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
+  	it("getLayouts",function(done){
+  		TestCases.getLayout(undefined,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
+  	it("getLayout",function(done){
+  		TestCases.getLayout(TestSpec.layoutID,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
+  	it("getRelatedList",function(done){
+  		TestCases.getRelatedList(undefined,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
+  	it("getRelatedLists",function(done){
+  		TestCases.getRelatedList(TestSpec.relatedID,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
 
 
+  	
+  	
+  	
+  	
 	it("unAuthenticated Invoke Connector",function(done){
   		TestCases.invokeUnAuthConnector(function(result){
   			expect(result).toBe(true);

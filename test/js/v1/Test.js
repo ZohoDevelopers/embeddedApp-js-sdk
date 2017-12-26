@@ -5,6 +5,9 @@ function testCompleted(done){
 var TestSpec={
 	recordID:undefined,
 	userID:undefined,
+	customViewID:undefined,
+	layoutID:undefined,
+	relatedID:undefined,
 	onLoadData:undefined,
 	recordData : {
 	        "Company": "Zylker",
@@ -13,7 +16,8 @@ var TestSpec={
 	        "Description":"Populating test data",
 	        "Phone":"85663655785"
 	  },
-	orgVariable:"unittest0.token",
+	orgVariable1:{key:"automationextension.PluginName",value:"AutomationExtension"},
+	orgVariable2:{key:"automationextension.PluginPurpose",value:"QATesting"},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
@@ -176,10 +180,10 @@ TestCases.getUser = function(userID,callBack){
 				})
 		  }
 };
-TestCases.getOrgVariable = function(variableName,callBack)
+TestCases.getOrgVariable = function(variable,callBack)
 {
-	ZOHO.CRM.CONFIG.getOrgVariable(variableName).then(function(data){
-		if(data || data.Success || data.Error)
+	ZOHO.CRM.API.getOrgVariable(variable.key).then(function(data){
+		if(data && data.Success && data.Success.Content === variable.value)
 		{
 			callBack(true);
 		}
@@ -209,7 +213,7 @@ TestCases.checkHttpRequest = function(url,callBack){
 	
 }
 TestCases.getFields = function(module,callBack){
-	ZOHO.CRM.META.API.getFields({Entity:module}).then(function(result){
+	ZOHO.CRM.META.getFields({Entity:module}).then(function(result){
 		if(result)
 		{
 			callBack(true);
@@ -221,7 +225,7 @@ TestCases.getFields = function(module,callBack){
 	});
 }
 TestCases.getModules = function(module,callBack){
-	ZOHO.CRM.META.API.getModules({Entity:module}).then(function(result){
+	ZOHO.CRM.META.getModules({Entity:module}).then(function(result){
 		if(result)
 		{
 			callBack(true);
@@ -233,7 +237,7 @@ TestCases.getModules = function(module,callBack){
 	});
 }
 TestCases.getAssignmentRules = function(module,callBack){
-	ZOHO.CRM.META.API.getAssignmentRules({Entity:module}).then(function(data){
+	ZOHO.CRM.META.getAssignmentRules({Entity:module}).then(function(data){
 		if(data)
 		{
 			callBack(true);
@@ -318,3 +322,62 @@ TestCases.invokeConnectorwithDynamic = function(apiname,data,callBack){
 		}
 	});
 }
+TestCases.getCustomViews = function(customViewId ,callBack){
+	
+	var reqData = {"Entity":"Leads"};
+	if(customViewId){
+		reqData.Id = customViewId;
+	}
+	ZOHO.CRM.META.getCustomViews(reqData)
+	.then(function(data){
+		if(data && data.categories && data.categories instanceof Array && data.custom_views && data.custom_views instanceof Array && data.custom_views.length > 0 && data.info)
+		{
+			TestSpec.customViewID = data.custom_views[0].id
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});	
+}
+TestCases.getLayout = function(layoutID ,callBack){
+	
+	var reqData = {"Entity":"Leads"};
+	if(layoutID){
+		reqData.Id = layoutID;
+	}
+	ZOHO.CRM.META.getLayouts(reqData)
+	.then(function(data){
+		if(data && data instanceof Object && data.layouts && data.layouts instanceof Array && data.layouts.length > 0)
+		{
+			TestSpec.layoutID = data.layouts[0].id
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});	
+}
+TestCases.getRelatedList = function(layoutID ,callBack)
+{
+	var reqData = {"Entity":"Leads"};
+	if(layoutID){
+		reqData.Id = layoutID;
+	}
+	ZOHO.CRM.META.getRelatedList(reqData)
+	.then(function(data){
+		if(data && data instanceof Object && data.related_lists && data.related_lists instanceof Array && data.related_lists.length > 0)
+		{
+			TestSpec.relatedID = data.related_lists[0].id
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});	
+}
+
+
