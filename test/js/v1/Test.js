@@ -9,6 +9,9 @@ var TestSpec={
 	layoutID:undefined,
 	relatedID:undefined,
 	onLoadData:undefined,
+	profileId:undefined,
+	approvalID:undefined,
+	blueprintId:undefined,
 	recordData : {
 	        "Company": "Zylker",
 	        "Last_Name": "Peterson",	
@@ -16,8 +19,17 @@ var TestSpec={
 	        "Description":"Populating test data",
 	        "Phone":"85663655785"
 	  },
+	upsertData : {
+		"Company": "Zylker1",
+        "Last_Name": "Peterson1",	
+        "Annual_Revenue":"5000",
+        "Description":"Populating test datas",
+        "Phone":"856636557852",
+        "Website" : "https://www.google.com"
+	},
 	orgVariable1:{key:"automationextension.PluginName",value:"AutomationExtension"},
 	orgVariable2:{key:"automationextension.PluginPurpose",value:"QATesting"},
+	multipleOrgVariable : {apiKeys:["automationextension.PluginName","automationextension.PluginPurpose"]},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
@@ -73,6 +85,181 @@ TestCases.insertRecord=function(module,recordData,callBack)
 				}
 			})
 };
+TestCases.addNotes = function(module,recordID,callBack)
+{
+	ZOHO.CRM.API.addNotes({Entity:module,RecordID:recordID,Title:"Notes Title",Content:"TitleContent"}).then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getBlueprint = function(module,recordID,callBack)
+{
+	ZOHO.CRM.API.getBluePrint({Entity:module,RecordID:recordID}).
+	then(function(data){
+		 if(data && typeof(data) === 'object' && data.blueprint)
+		 {
+			if(data.blueprint.transitions && data.blueprint.transitions instanceof Array)
+			{
+				if(data.blueprint.transitions.length >0)
+				{
+					TestSpec.blueprintId = data.blueprint.transitions[0].id;
+				}
+			}
+			 callBack(true)
+		 }
+		 else
+		 {
+			 callBack(false);
+		 }
+	});
+}
+TestCases.updateBluePrint = function(module,recordID,bluePrintData,callBack)
+{
+	ZOHO.CRM.API.updateBluePrint({Entity:module,RecordID:recordID,BlueprintData:bluePrintData})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.code==="SUCCESS")
+		 {
+			callBack(true)
+		 }
+		else
+		{
+			callBack(false)
+		}
+	});
+	
+}
+TestCases.upsertRecordWithoutDuplicate = function(module,upsertData,callBack)
+{
+	ZOHO.CRM.API.upsertRecord({Entity:module,APIData:upsertData})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array && data.data[0].action === "insert")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.upsertWithDuplicateField = function(module,upsertData,callBack)
+{
+	ZOHO.CRM.API.upsertRecord({Entity:module,APIData:upsertData,duplicate_check_fields : ["Website"]})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array && data.data[0].action === "update")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getAllActions = function(module,recordID,callBack)
+{
+	ZOHO.CRM.API.getAllActions({Entity:module,RecordID:recordID})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.actions instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getApprovalRecords = function(callBack)
+{
+	ZOHO.CRM.API.getApprovalRecords()
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			TestSpec.approvalID = data.data[0].id;
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getApprovalRecordById = function(approvalID,callBack)
+{
+	ZOHO.CRM.API.getApprovalById({id:approvalID})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.approveRecord = function(module,recordID,actionType,callBack)
+{
+	ZOHO.CRM.API.approveRecord({Entity:module,RecordID:recordID,actionType:actionType})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.code==="SUCCESS")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getApprovalHistory = function(callBack)
+{
+	ZOHO.CRM.API.getApprovalsHistory()
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getAllProfiles = function(module,recordID,callBack)
+{
+	ZOHO.CRM.API.getAllProfiles().then(function(data){
+		if(data && typeof(data) === 'object' && data.profiles instanceof Array )
+		{
+			TestSpec.profileId = data.profiles[0].id;
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getProfile = function(profileID,callBack)
+{
+	ZOHO.CRM.API.getProfile({ID:profileID}).then(function(data){
+		if(data && typeof(data) === 'object' && data.profiles instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
 TestCases.deleteRecord=function(module,recordID,callBack){
 		  if(!recordID){
 				callBack(false);
@@ -191,6 +378,18 @@ TestCases.getOrgVariable = function(variable,callBack)
 			{
 				callBack(false);
 			}
+	});
+}
+TestCases.getMultipleOrgvariable = function(multipleorgvariable,callBack){
+	ZOHO.CRM.API.getOrgVariable(TestSpec.multipleOrgVariable).then(function(data){
+		if(data && data.Success && (Object.keys(data.Success.content)).length === TestSpec.multipleOrgVariable.apiKeys.length)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
 	});
 }
 TestCases.checkHttpRequest = function(url,callBack){
@@ -379,5 +578,17 @@ TestCases.getRelatedList = function(layoutID ,callBack)
 		}
 	});	
 }
-
+TestCases.uiResize = function(data,callBack)
+{
+	ZOHO.CRM.UI.Resize(data).then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
 

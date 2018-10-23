@@ -25,4 +25,14 @@ describe("SDK Testing", function() {
 			done();
 		});
 	});
+	/*
+	 * check resize
+	 */
+	it("UI resize", function(done)
+	{
+		TestCases.uiResize({width:100,height:500},function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
 });

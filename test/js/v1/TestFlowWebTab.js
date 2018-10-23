@@ -1,7 +1,7 @@
 describe("SDK Testing", function() {
 	beforeAll(function(done) 
 	{
-3		jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 		ZOHO.embeddedApp.init()
 		.then(function()
 		{
@@ -16,6 +16,138 @@ describe("SDK Testing", function() {
 	{
 		TestCases.insertRecord("Leads",TestSpec.recordData,function(result,recordID){
 			TestSpec.recordID = recordID;
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/* 
+	 * add notes to the created record
+	 */
+	it("add notes", function(done)
+	{
+		TestCases.addNotes("Leads",TestSpec.recordID,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/* 
+	 * get all actions 
+	 */
+	it("get All Actions", function(done)
+	{
+		TestCases.getAllActions("Leads",TestSpec.recordID,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get all profiles
+	 */
+	it("get All profiles", function(done)
+	{
+		TestCases.getAllProfiles("Leads",TestSpec.recordID,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get ProfileDetails
+	 */
+	it("get profile details", function(done)
+	{
+		TestCases.getProfile(TestSpec.profileId,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * upsert api without duplicate fields
+	 */
+	it("upsert without duplicate fields", function(done)
+	{
+		TestCases.upsertRecordWithoutDuplicate("Leads",TestSpec.upsertData,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * upsert api with duplicate fields -- website
+	 */
+	it("upsert with duplicate fields (Website)", function(done)
+	{
+		TestCases.upsertWithDuplicateField("Leads",TestSpec.upsertData,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get approval records
+	 */
+	it("get approval records", function(done)
+	{
+		TestCases.getApprovalRecords(function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get approval records by id
+	 */
+	it("get approval recordById", function(done)
+	{
+		TestCases.getApprovalRecordById(TestSpec.approvalID,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get approval records by id
+	 */
+	it("approve record", function(done)
+	{
+		TestCases.approveRecord("Leads",TestSpec.recordID,"approve",function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get approval History
+	 */
+	it("get approvalHistory", function(done)
+	{
+		TestCases.getApprovalHistory(function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get Blueprint details
+	 */
+	it("get blueprint", function(done)
+	{
+		TestCases.getBlueprint("Leads",TestSpec.recordID,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * update blue print
+	 */
+	it("update blue print", function(done)
+	{
+		var BlueprintData = 
+		{
+		 "blueprint": [
+		   {
+		     "transition_id":TestSpec.blueprintId,
+		     "data": {
+		       "Phone": "8940372937",
+		       "Notes": "Updated via blueprint"
+		     }
+		   }
+		 ]
+		}
+		TestCases.updateBluePrint("Leads",TestSpec.recordID,BlueprintData,function(result){
 			expect(result).toBe(true);
 			done();
 		});
@@ -81,6 +213,12 @@ describe("SDK Testing", function() {
         done();
       });
     });
+    it("getMultipleOrgvariable",function(done){
+        TestCases.getMultipleOrgvariable(TestSpec.multipleOrgVariable,function(result){
+          expect(result).toBe(true);
+          done();
+        });
+      });
   	it("checkHtttpRequst",function(done){
   		TestCases.checkHttpRequest(TestSpec.url,function(result){
   			expect(result).toBe(true);
