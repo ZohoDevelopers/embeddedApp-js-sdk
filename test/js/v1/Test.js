@@ -33,7 +33,11 @@ var TestSpec={
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
-	connectorFile : "unittest0.unittest.getfile"
+	connectorFile : "unittest0.unittest.getfile",
+	connectorWithoutDynamic : "auditextension.zohoconnector.createleads",
+	connectorWithDynamic : "auditextension.zohoconnector.getallrecords",
+	company : "company",
+	lastname : "lastname"
 };
 const TestCases ={
 		
@@ -529,7 +533,7 @@ TestCases.getCustomViews = function(customViewId ,callBack){
 	}
 	ZOHO.CRM.META.getCustomViews(reqData)
 	.then(function(data){
-		if(data && data.categories && data.categories instanceof Array && data.custom_views && data.custom_views instanceof Array && data.custom_views.length > 0 && data.info)
+		if(data && data.custom_views && data.custom_views instanceof Array && data.custom_views.length > 0 && data.info)
 		{
 			TestSpec.customViewID = data.custom_views[0].id
 			callBack(true);

@@ -335,13 +335,13 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   		});
   	});
   	it("invokeConnectorWithoutDynamic",function(done){
-  		TestCases.invokeConnectorWithoutDynamic(TestSpec.connector,{},function(result){
+  		TestCases.invokeConnectorWithoutDynamic(TestSpec.connectorWithoutDynamic,{},function(result){
   			expect(result).toBe(true);
   			done();
   		});
   	});
   	it("invokeConnectorWithoutDynamicValue",function(done){
-  		TestCases.invokeConnectorwithDynamic(TestSpec.connectorFile,{fileId:TestSpec.fileId},function(result){
+  		TestCases.invokeConnectorwithDynamic(TestSpec.connectorWithDynamic,{company:TestSpec.company,lastname:TestSpec.lastname},function(result){
   			expect(result).toBe(true);
   			done();
   		});
