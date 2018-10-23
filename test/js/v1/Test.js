@@ -27,8 +27,8 @@ var TestSpec={
         "Phone":"856636557852",
         "Website" : "https://www.google.com"
 	},
-	orgVariable1:{key:"automationextension.PluginName",value:"AutomationExtension"},
-	orgVariable2:{key:"automationextension.PluginPurpose",value:"QATesting"},
+	orgVariable1:{key:"auditextension.PluginName",value:"AutomationExtension"},
+	orgVariable2:{key:"auditextension.PluginPurpose",value:"QATesting"},
 	multipleOrgVariable : {apiKeys:["automationextension.PluginName","automationextension.PluginPurpose"]},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	connector:"unittest0.unittest.getfiles",
