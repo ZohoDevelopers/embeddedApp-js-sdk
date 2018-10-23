@@ -29,7 +29,7 @@ var TestSpec={
 	},
 	orgVariable1:{key:"auditextension.PluginName",value:"AutomationExtension"},
 	orgVariable2:{key:"auditextension.PluginPurpose",value:"QATesting"},
-	multipleOrgVariable : {apiKeys:["automationextension.PluginName","automationextension.PluginPurpose"]},
+	multipleOrgVariable : {apiKeys:["auditextension.PluginName","auditextension.PluginPurpose"]},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
