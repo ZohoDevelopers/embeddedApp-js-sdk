@@ -219,8 +219,26 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
           done();
         });
       });
-  	it("checkHtttpRequst",function(done){
-  		TestCases.checkHttpRequest(TestSpec.url,function(result){
+  	it("checkHtttpGetRequst",function(done){
+  		TestCases.checkHttpGetRequest(TestSpec.getUrl,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("checkHtttpPostRequst",function(done){
+  		TestCases.checkHttpPostRequest(TestSpec.postUrl,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("checkHtttpPutRequst",function(done){
+  		TestCases.checkHttpPutRequest(TestSpec.putUrl,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+  	it("checkHtttpPatchRequst",function(done){
+  		TestCases.checkHttpPatchRequest(TestSpec.patchUrl,function(result){
   			expect(result).toBe(true);
   			done();
   		});

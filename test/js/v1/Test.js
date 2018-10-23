@@ -31,6 +31,10 @@ var TestSpec={
 	orgVariable2:{key:"auditextension.PluginPurpose",value:"QATesting"},
 	multipleOrgVariable : {apiKeys:["auditextension.PluginName","auditextension.PluginPurpose"]},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
+	getUrl: "https://httpbin.org/get",
+	postUrl: "https://httpbin.org/post",
+	putUrl :"https://httpbin.org/put",
+	patchUrl:"https://httpbin.org/patch",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
 	connectorFile : "unittest0.unittest.getfile",
@@ -396,7 +400,7 @@ TestCases.getMultipleOrgvariable = function(multipleorgvariable,callBack){
 		}
 	});
 }
-TestCases.checkHttpRequest = function(url,callBack){
+TestCases.checkHttpGetRequest = function(url,callBack){
 	var request ={
 		url : url
 	}
@@ -404,7 +408,64 @@ TestCases.checkHttpRequest = function(url,callBack){
 	ZOHO.CRM.HTTP.get(request).then(function(responseData)
 	{
 		var response = JSON.parse(responseData);
-		if(response && response.foo && response.foo === "Hello Word")
+		if(response && response.url && response.url === url)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false)
+		}
+	});
+	
+}
+TestCases.checkHttpPostRequest = function(url,callBack){
+	var request ={
+		url : url
+	}
+	
+	ZOHO.CRM.HTTP.post(request).then(function(responseData)
+	{
+		var response = JSON.parse(responseData);
+		if(response && response.url && response.url === url)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false)
+		}
+	});
+	
+}
+TestCases.checkHttpPutRequest = function(url,callBack){
+	var request ={
+		url : url
+	}
+	
+	ZOHO.CRM.HTTP.put(request).then(function(responseData)
+	{
+		var response = JSON.parse(responseData);
+		if(response && response.url && response.url === url)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false)
+		}
+	});
+	
+}
+TestCases.checkHttpPatchRequest = function(url,callBack){
+	var request ={
+		url : url
+	}
+	
+	ZOHO.CRM.HTTP.patch(request).then(function(responseData)
+	{
+		var response = JSON.parse(responseData);
+		if(response && response.url && response.url === url)
 		{
 			callBack(true);
 		}
