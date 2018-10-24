@@ -30,7 +30,7 @@ describe("SDK Testing", function() {
 	 */
 	it("UI resize", function(done)
 	{
-		TestCases.uiResize({width:100,height:500},function(result){
+		TestCases.uiResize({width:100,height:200},function(result){
 			expect(result).toBe(true);
 			done();
 		});

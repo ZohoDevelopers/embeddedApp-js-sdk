@@ -31,6 +31,95 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 		});
 	});
 	/* 
+	 * attach File
+	 */
+	it("attachFile", function(done)
+	{
+		var content = {hello: "world"};
+		var blob = new Blob([JSON.stringify(content, null, 2)], {type : 'application/json'});
+		TestCases.attachFile("Leads",TestSpec.recordID,blob,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * insert products
+	 */
+	it("insert record in products module",function(done)
+	{
+		TestCases.insertProduct("Products",{"Product_Name": "product"+Date.now()},function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * update relatedlist
+	 */
+	it("update related records",function(done){
+		var APIData = {
+				Description:"Test description"
+			 }
+		TestCases.updateRelatedRecords("Leads",TestSpec.recordID,"Products",TestSpec.productId,APIData,function(result){
+			expect(result).toBe(true);
+			done();
+		})
+	});
+	/*
+	 * upload file
+	 */
+	it("uploadFile",function(done){
+		var file = new File(['foo', 'bar'], 'foobar.txt');
+		var fileType = file.type;
+		var config = {
+		   "CONTENT_TYPE": "multipart",
+		   "PARTS": [{
+		       "headers": {
+		           "Content-Disposition": "file;"
+		       },
+		       "content": "__FILE__"
+		   }],
+		   "FILE": {
+		       "fileParam": "content",
+		       "file": file
+		   }
+		}
+		TestCases.uploadFile(config,function(result){
+			expect(result).toBe(true);
+			done();
+		})
+	})
+	/*
+	 * getFile
+	 */
+	it("getFile",function(done){
+		var config = {
+				id:TestSpec.uploadFileID
+		}
+		TestCases.getFile(config,function(result){
+			expect(result).toBe(true);
+			done();
+		})
+	});
+	/*
+	 * delink related record
+	 */
+	it("delinkRelatedRecord",function(done){
+		TestCases.delinkRelatedRecord("Leads",TestSpec.recordID,"Products",TestSpec.productId,function(result){
+			expect(result).toBe(true);
+			done();
+		})
+	});
+	/* 
+	 * get getRelatedRecords
+	 */
+	it("getRelatedRecords", function(done)
+	{
+		TestCases.getRelatedRecords("Leads",TestSpec.recordID,"Notes",function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/* 
 	 * get all actions 
 	 */
 	it("get All Actions", function(done)

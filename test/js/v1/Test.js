@@ -12,6 +12,9 @@ var TestSpec={
 	profileId:undefined,
 	approvalID:undefined,
 	blueprintId:undefined,
+	productId:undefined,
+	relationID:undefined,
+	uploadFileID:undefined,
 	recordData : {
 	        "Company": "Zylker",
 	        "Last_Name": "Peterson",	
@@ -106,6 +109,78 @@ TestCases.addNotes = function(module,recordID,callBack)
 		}
 	});
 }
+TestCases.attachFile = function(module,recordID,blob,callBack)
+{
+	ZOHO.CRM.API.attachFile({Entity:module,RecordID:recordID,File:{Name:"myFile.txt",Content:blob}})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.insertProduct = function(module,recordData,callBack)
+{
+	ZOHO.CRM.API.insertRecord({Entity:module,APIData:recordData})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			TestSpec.productId = data.data[0].details.id;
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.updateRelatedRecords = function(module,recordID,relatedlistName,relatedRecordID,apidata,callBack)
+{
+	 ZOHO.CRM.API.updateRelatedRecords({Entity:module,RecordID:recordID,RelatedList:relatedlistName,RelatedRecordID:relatedRecordID,APIData:apidata})
+	 .then(function(data){
+		 if(data && typeof(data) === 'object' && data.data instanceof Array )
+			{
+				TestSpec.relationID = data.data[0].details.id;
+				callBack(true);
+			}
+			else
+			{
+				callBack(false);
+			}
+	 })
+}
+TestCases.delinkRelatedRecord = function(module,recordID,relatedlistName,relatedRecordID,callBack)
+{
+	ZOHO.CRM.API.delinkRelatedRecord({Entity:module,RecordID:recordID,RelatedList:relatedlistName,RelatedRecordID:relatedRecordID})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getRelatedRecords = function(module,recordID,relatedlistName,callBack)
+{
+	ZOHO.CRM.API.getRelatedRecords({Entity:module,RecordID:recordID,RelatedList:relatedlistName})
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.data instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
 TestCases.getBlueprint = function(module,recordID,callBack)
 {
 	ZOHO.CRM.API.getBluePrint({Entity:module,RecordID:recordID}).
@@ -140,6 +215,39 @@ TestCases.updateBluePrint = function(module,recordID,bluePrintData,callBack)
 			callBack(false)
 		}
 	});
+	
+}
+TestCases.uploadFile = function(config,callBack)
+{
+	ZOHO.CRM.API.uploadFile(config)
+	.then(function(data) {
+		if(data && typeof(data) === 'object' && data.data instanceof Array)
+		{
+			if(data.data[0] && data.data[0].details.id)
+			{
+				TestSpec.uploadFileID = data.data[0].details.id;
+			}
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+}
+TestCases.getFile = function(config,callBack)
+{
+	ZOHO.CRM.API.getFile(config)
+	.then(function(data){
+		if(data && typeof(data) ==='string' && data==="foobar")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
 	
 }
 TestCases.upsertRecordWithoutDuplicate = function(module,upsertData,callBack)
