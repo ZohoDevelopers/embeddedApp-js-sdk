@@ -19,25 +19,10 @@ describe("SDK Testing", function() {
 	 */
 	it("EditPage", function(done)
 	{
-		var url = new URL(window.location.href);
-		var actionType = url.searchParams.get("action");
-		
-		
-		if(actionType === 'verify')
-		{
-			TestCases.validateForm(TestSpec.onLoadData,function(result){
-				expect(result).toBe(true);
-				done();
-			});	
-		}
-		else if(actionType === 'populate')
-		{
-			ZOHO.CRM.UI.Record.populate(TestSpec.recordData)
-			.then(function(data){
-				expect(data).toBe(true);
-				done();
-			})
-			
-		}
+		var onloadData = TestSpec.onLoadData;
+		TestCases.getRecord(onloadData.Entity,onloadData.EntityId,function(result){
+			expect(result).toBe(true);
+			done();
+		});
 	});
 });
