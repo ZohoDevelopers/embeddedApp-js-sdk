@@ -49,10 +49,17 @@ Description
 
 Example
 --
-	ZOHO.embeddedApp.init()
-	.then(function(){
-			return ZOHO.CRM.CONFIG.getCurrentUser()
-	})
-	.then(function(data){
+	/*
+	 * Subscribe to the EmbeddedApp onPageLoad event before initializing 
+	 */
+	 
+	ZOHO.embeddedApp.on("PageLoad",function(data)
+	{
 		console.log(data);
+		//Custom Bussiness logic goes here
 	})
+
+	/*
+	 * initializing the widget.
+	 */
+	ZOHO.embeddedApp.init();

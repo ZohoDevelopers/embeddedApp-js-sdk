@@ -41,8 +41,8 @@ var TestSpec={
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
 	connectorFile : "unittest0.unittest.getfile",
-	connectorWithoutDynamic : "auditextension.zohoconnector.createleads",
-	connectorWithDynamic : "auditextension.zohoconnector.getallrecords",
+	connectorWithDynamic : "auditextension.zohoconnector.createleads",
+	connectorWithoutDynamic : "auditextension.zohoconnector.getallrecords",
 	company : "company",
 	lastname : "lastname"
 };
