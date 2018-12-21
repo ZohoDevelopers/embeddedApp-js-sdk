@@ -9,3 +9,4 @@ server.zip
 temp
 test/lib/*
 tempImpl
+.DS_Store
