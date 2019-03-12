@@ -6,12 +6,35 @@
 </head>
 <body>
 <input type="file" name="File" id ="File"></input>
+<input type="text" id="namesapce"/>
+<input type="button" id ="authorize" value="authorize"></input>
 <script>
 ZOHO.embeddedApp.on("PageLoad",function(data){
 	console.log("pageLoad Data");
 	console.log(data);
 })
 ZOHO.embeddedApp.init()
+$("#File").change(function(){
+	var file = document.getElementById("File").files[0];
+	// ZOHO.CRM.API.uploadMailAttachment({File:file}).then(function(data){
+	// 	console.log("without inline")
+ //            console.log(data);
+	// });
+	// ZOHO.CRM.API.uploadMailAttachment({File:file,inline:true}).then(function(data){
+	// 		console.log("-----------------")
+	// 		console.log("inline")
+	// 		console.log("-----------------")
+ //            console.log(data);
+	// });
+	ZOHO.CRM.API.uploadFile(file).then(function(data) {
+   console.log(data);
+	})
+
+});
+$("#authorize").click(function(){
+	var nameps = $("#namesapce").val();
+	ZOHO.CRM.CONNECTOR.authorize(nameps).catch(function(err){console.log(err)}).then(function(t){console.log("after then"+t)});
+})
 </script>
 </body>
 </html>
