@@ -1,0 +1,416 @@
+<html style="background: red;">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="../../lib/ZSDK.js"></script>
+  <script type="text/javascript" src="../../lib/ZohoCrmHelper.js"></script> 
+
+<!--   <script type="text/javascript" src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script> -->
+  <script type="text/javascript">
+    (function( context ) {
+    // Internal variables
+    var _channels = null,
+        _tabId = null,//Current Tab's list
+        _prefix = 'BroadcastChannelPoly_'; // prefix to identify localStorage keys.
+        
+    function getRandomString( length ) 
+    {
+        var text = "",
+            charSet= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for( var i=0; i < (length || 10); i++ ) {
+            text += charSet.charAt(Math.floor(Math.random() * charSet.length));
+        }
+        return text;
+    };
+
+    function isEmpty(obj) {
+        for( var prop in obj) { 
+            if(obj.hasOwnProperty(prop))
+                return false;
+        }
+        return true; 
+    };
+    
+    function getTimestamp() {
+        return (new Date().getTime());
+    };
+    
+    /**
+     * Creates a new BroadcastChannel
+     * @param {String} channelName - the channel name.
+     * return {BroadcastChannel}
+     */
+    function BroadcastChannel( channelName ) {
+        
+        // Check if localStorage is available.
+        if (!context.localStorage) {
+            throw new Error('localStorage not available');
+            return;
+        }
+    
+        // Add custom prefix to Channel Name.
+        var _channelId = _prefix + channelName,
+            isFirstChannel = (_channels === null);
+    
+        this.channelId = _channelId;
+        
+        _tabId = _tabId || getRandomString(); // Creates a new tab identifier, if necessary.
+        _channels = _channels || {}; // Initializes channels, if necessary.
+        _channels[ _channelId ] = _channels[ _channelId ] || [];
+        
+        // Adds the current Broadcast Channel.
+        _channels[ _channelId ].push( this );
+    
+        // Creates a sufficiently random name for the current instance of BC.
+        this.name = _channelId + '::::' + getRandomString() + getTimestamp();
+    
+        // If it is the first instance of Channel created, also creates the storage listener.
+        if (isFirstChannel) {
+            // addEventListener.
+            context.addEventListener('storage', _onmsg.bind(this), false);
+        }
+    
+        return this;
+    };
+    
+    /**
+     * Empty function to prevent errors when calling onmessage.
+     */
+    BroadcastChannel.prototype.onmessage = function( ev ){};
+    
+    /**
+     * Add the msgObj to localStorage to trigger the onStorage event
+     * @param {Object} data - the data to be sent ( actually, it can be any JS type ).
+     */
+    BroadcastChannel.prototype.postMessage = function( msgObj ) 
+    {
+        msgObj = {data : msgObj};
+        if (this.closed) {
+            
+            throw new Error('This BroadcastChannel is closed.');
+            return;
+        }        
+
+        var broadCastObj = {
+            channelId: this.channelId,
+            bcId: this.name,
+            tabId: _tabId,
+            message: msgObj
+        };
+        
+        try 
+        {
+            console.log(broadCastObj);
+            var broadCastString = JSON.stringify( broadCastObj );
+            var lsKey =  'eomBCmessage_' + getRandomString() + '_' + this.channelId;
+            // Set key and remove it after 1 sec
+            context.localStorage.setItem( lsKey, broadCastString );
+        } catch (ex) 
+        {
+            throw new Error('Unable to parse msgObj');
+            return;
+        }
+        setTimeout(function(){ context.localStorage.removeItem( lsKey ) }, 1000);
+        
+    };
+    
+    /**
+     * Handler of the 'storage' function. 
+     * Called when another window has sent a message.
+     * @param {Object} ev - the message.
+     * @private
+     */
+    function _onmsg( ev ) {
+        var key = ev.key,
+            newValue = ev.newValue,
+            isRemoved = !newValue,
+            obj = null;
+        // Actually checks if the messages if from us.
+        if ( key.indexOf('eomBCmessage_') > -1 && !isRemoved) {
+            
+            try {
+                obj = JSON.parse( newValue );
+            } catch( ex ) {
+                throw new  Error('Unable to parse JsonString');
+                return;
+            }
+            
+            // NOTE: Check on tab is done to prevent IE error 
+            // (localStorage event is called even in the same tab :( )
+                    
+            if ( (obj.tabId !== _tabId) &&
+                 obj.channelId &&
+                 _channels &&
+                 _channels[ obj.channelId ] ) {
+                
+                var subscribers = _channels[ obj.channelId ];
+                for (var j in subscribers) {
+                    if (!subscribers[j].closed && subscribers[j].onmessage ) {
+                        subscribers[j].onmessage( obj.message );
+                    }
+                }
+                // Remove the item for safety.
+                context.localStorage.removeItem( key );
+            }     
+        }
+    };
+    
+    /**
+     * Closes a Broadcast channel.
+     */ 
+    BroadcastChannel.prototype.close = function() {
+        
+        this.closed = true;
+        
+        var index = _channels[ this.channelId ].indexOf(this);
+        if (index > -1)
+            _channels[ this.channelId ].splice( index, 1 );
+        
+        // If we have no channels, remove the listener. 
+        if (!_channels[ this.channelId ].length) {
+            delete _channels[ this.channelId ];
+        }
+        if ( isEmpty( _channels ) ) {
+            context.removeEventListener( 'storage', _onmsg.bind(this) );
+        }
+    };
+    
+    context.BroadcastChannel = context.BroadcastChannel || BroadcastChannel;
+})( window.self );
+  </script>
+ <!-- <script type="text/javascript" src="https://live.zwidgets.com/js-sdk/beta1.0.3/ZohoEmbededAppSDK.min.js"></script> -->
+</head>
+<body>
+<input type="file" name="File" id ="attachmentinput"></input>
+Opening records
+<ul>
+    
+    <li>1475615000002057593</li>
+    <li>1475615000002057592</li>
+    <li>1475615000002057591</li>
+    <li>1475615000002057590</li>
+    <li>1475615000002057589</li>
+
+</ul>
+<span id="recordID"> Waiting for Record</span>
+<br>
+<br>
+<br>
+<br>
+<input type="button" name="File" onclick="startOpening()" value="Start Same Page Automation"></input>
+<input type="button" name="File" onclick="startOpening('_blank')" value="Start New Tab Automation"></input>
+
+
+<script>
+ZOHO.embeddedApp.on("PageLoad",function(data){
+    console.log("pageLoad Data");
+    console.log(data);
+    // ZOHO.CRM.UI.Resize({width:50000,height:50000});
+
+    ZOHO.CRM.UI.Resize({width:"90%",height:"90%"})
+})
+ZOHO.embeddedApp.init()
+
+
+function startOpening(target)
+{
+    // ZOHO.CRM.API.getAllRecords({Entity:"Leads"})
+    // .then(function(response)
+    // {
+      var data = ["111124000000040195","111124000000040189"]
+      jQuery.each(data,function(index,data)
+      {
+        setTimeout(function()
+        {
+            $("#recordID").text("Record :: " + data);
+            ZOHO.CRM.UI.Record.open({Entity:"Leads",RecordID:data,Target:target})
+        },5000*index)
+      });
+    // })
+
+}
+
+
+
+
+
+
+//Temp code to be removed
+
+var Broadcaster = {
+
+        "reload":function(){
+            TBC.postMessage({action:"reload"});
+        },
+        "test_read":function(){
+            TBC.postMessage({action:"testR"});
+        },
+        "test_read_image":function(){
+            TBC.postMessage({action:"testRImage"});
+        },
+        "test_write":function(count){
+            TBC.postMessage({action:"testW",count:count});
+        },
+        "test_error":function(count){
+            TBC.postMessage({action:"testerror",count:count});
+        },
+        "clear":function(){
+            TBC.postMessage({action:"clear"});
+        },
+        "visChk":function(){
+            TBC.postMessage({action:"visChk"});
+        },
+        "visChk_stop":function(){
+            TBC.postMessage({action:"visChk_stop"});
+        },
+        "test_normal":function(){
+            TBC.postMessage({action:"test_normal"});
+        },
+        "test_lls":function(){
+            TBC.postMessage({action:"test_lls"});
+        },
+        "initParalledTest" : function(fn,count,delay,verify){
+            var arr = [];
+            Broadcaster.clear();
+            var maxLimit = count;
+            var counter = 0;
+            var intervalID = setInterval(function(){
+                    if(counter >= maxLimit)
+                    {
+                        clearInterval(intervalID);
+                        if(verify)
+                        {
+                            gatAllRecords(1)
+                            .then(function()
+                            {
+
+                                var hashMap = {};
+                                $.each(arr,function(index,data)
+                                {
+                                    hashMap[data] = hashMap[data] ?  hashMap[data] + 1 :  1;
+                                })
+                                var duplicatesMap = {};
+                                $.each(hashMap,function(key,value){
+                                    if(value > 1 )
+                                    {
+                                        duplicatesMap[key] = value  
+                                    }
+                                });
+                                console.log(duplicatesMap);
+                            });
+                        }
+                        
+                    }
+                    else
+                    {
+                        counter++;
+                        console.log(counter);
+                        fn.apply(null,[counter]);
+                    }
+            },500)
+
+
+            function gatAllRecords(page)
+            {   
+                return ZOHO.CRM.API.getAllRecords({Entity:"Leads",per_page:100,page:page})
+                .then(function(Naresh)
+                {
+                    if(Naresh.data)
+                    {
+                        $.each(Naresh.data,function(index,data){
+                            arr.push(data.Company.replace("Zylker",""));
+                        });
+                    }
+                    if(Naresh.info.more_records)
+                    {
+                        gatAllRecords(page+1)
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    
+                });
+            }
+        }
+
+}
+
+var TBC = new BroadcastChannel('test_broadcast_channel');
+var setIntervalNumber = undefined;
+TBC.onmessage = function (ev) 
+{ 
+    var msg = ev.data;
+    if(!msg || !msg.action){
+        return;     
+    }
+    switch(msg.action)
+    {
+        case "reload" : 
+                    window.location.reload();
+                    break;
+                    
+        case "testRImage" : 
+            var config = {
+               id:"b12bb1b005f171ac797b3773040438ba3567b325dd490a6ce92b31e96abad90b"
+            }
+            ZOHO.CRM.API.getFile(config).then(function(data){
+                console.log("----------Data from API----------");
+                console.log(data);
+            });
+            break;
+        case "testR" : 
+            ZOHO.CRM.API.getAllRecords({Entity:"Leads"})
+            .then(function(data){
+                console.log("----------Data from API----------");
+                console.log(data);
+            });
+            break;
+            
+        case "testW" : 
+            
+            var recordData = {
+                "Company": "Zylker"+msg.count,
+                "Last_Name": "Peterson"
+            }
+            console.time(""+msg.count);
+            ZOHO.CRM.API.insertRecord({Entity:"Leads",APIData:recordData}).then(function(data){
+                console.timeEnd(""+msg.count);
+                console.log("----------Data from API----------");
+                console.log(data);
+            });
+            break;
+            
+        case "testerror" : 
+            var recordData = {
+                "Company": "Zylker",
+                "Last_Name": "Peterson"
+            }
+            ZOHO.CRM.API.insertRecord({Entity:"Leads"+msg.count,APIData:recordData}).then(function(data){
+                console.log("----------Data from API----------");
+                console.log(data);
+            });
+            break;
+        case "clear"  :
+            console.clear();
+            break;
+        case "visChk" : 
+            setIntervalNumber = setInterval(function(){
+                console.log(document.hidden? "Hidden":"Visible");
+            },1000);
+            break;
+            
+        case "visChk_stop" : 
+            clearInterval(setIntervalNumber);
+            break;
+    }
+}
+
+/*
+parallal test execution
+Broadcaster.initParalledTest(Broadcaster.test_write,10,300)
+*/
+
+</script>
+<br>--------------------------------------------------------
+</body>
+</html>
