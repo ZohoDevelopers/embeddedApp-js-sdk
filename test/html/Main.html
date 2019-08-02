@@ -13,6 +13,10 @@ ZOHO.embeddedApp.on("PageLoad",function(data){
 	console.log("pageLoad Data");
 	console.log(data);
 })
+ZOHO.embeddedApp.on("HistoryPopState",function(data){
+		console.log("HistoryPopState Data");
+		console.log( JSON.parse(JSON.stringify(data)) );
+	});
 ZOHO.embeddedApp.init()
 $("#File").change(function(){
 	var file = document.getElementById("File").files[0];

@@ -1,9 +1,10 @@
 Test Application endpoints.
 
-WebTab 
+WebTab
+
 	html/CompTest.html?type=WebTab
 
-Buttons
+Custom Buttons
 
 	ListView 
 		html/CompTest.html?type=CustomButtonList
@@ -24,5 +25,12 @@ Buttons
 		html/CompTest.html?type=CustomButtonCreate&action=verify
 
 
-RelatedList 
+Related List
+	
 	html/CompTest.html?type=RelatedList
+
+
+
+Mobile Testing
+
+	html/CompTest.html?type=MobileTestCases

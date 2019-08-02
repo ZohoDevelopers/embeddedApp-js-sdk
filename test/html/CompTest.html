@@ -1,6 +1,59 @@
 <html>
 <head>
-  <link rel="import" href="include.html">
+<style>
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+  <script type="text/javascript" src="../js/Promise.min.js"></script>
+  <link rel="shortcut icon" type="/test/image/png" href="../lib/jasmine/jasmine_favicon.png">
+  <link rel="stylesheet" href="../lib/jasmine/jasmine.css">
+
+  <script src="../lib/jasmine/jasmine.js"></script>
+  <script src="../lib/jasmine/jasmine-html.js"></script>
+  <script src="../lib/jasmine/boot.js"></script>
+  <script src="../lib/require/require.min.js"></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <style>
+#table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#table td, #table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#table tr:nth-child(even){background-color: #f2f2f2;}
+
+#table tr:hover {background-color: #ddd;}
+
+#table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+
+
 <script>
 function runTest(){
 	var sdkVersion = $("#sdkVersion").val();
@@ -22,16 +75,102 @@ function initiateTestSequence(testDir,testCollection)
 }
 $(document).ready(function(){
 	var url = new URL(window.location.href);
-	var typeParam = url.searchParams.get("type");
-	if(typeParam){
-		$("#testCollection").val(typeParam);	
-		runTest();
+	var typeParam = "MobileTestCases";
+	if(url.searchParams)
+	{
+		typeParam = url.searchParams.get("type");		
+	}
+
+	if(typeParam)
+	{
+		$("#testCollection").val(typeParam);
+		if("MobileTestCases" === typeParam)
+		{
+			$("#Container").show();
+			$(".jasmine_html-reporter").remove();
+			var script = document.createElement("script");
+			script.setAttribute("type", "text/javascript");
+			script.setAttribute("src", "../../lib/ZSDK.js");
+			document.getElementsByTagName("head")[0].appendChild(script);
+			
+			var script = document.createElement("script");
+			script.setAttribute("type", "text/javascript");
+			script.setAttribute("src", "../../lib/ZohoCrmHelper.js");
+			script.setAttribute("onload","initWidgetTest()")
+			document.getElementsByTagName("head")[0].appendChild(script);
+
+
+			
+
+		}
+		else
+		{			
+			runTest();	
+		}
+
+		
 	}
 });
+function initWidgetTest(){
+	var script = document.createElement("script");
+	script.setAttribute("type", "text/javascript");
+	script.setAttribute("src", "../js/v1/TestMobileWidget.js");
+	document.getElementsByTagName("head")[0].appendChild(script);
+}
+</script>
+<script id="moduleSelection" type="text/x-handlebars-template">
+	<span id="pageLoadData"></span>
+	<br>
+	<br>
+	<select id="webTabSelection" onchange="webTabSelect(this)">
+		{{#each this.webTabs}}
+	    	   <option value="{{api_name}}">{{module_name}}</option>
+    	{{/each}}
+	</select>
+	<input type="text" id="currentWebTab">
+	<input type="button" value="Open Widget with Above data" onclick="TestCases.openWidget()"/></input>
+	<br>
+	<br>
+	<textarea id="openWidgetData" style="height: 100px;width: 500px;">
+{
+	Name:"Naresh",
+	EmpId:"2182",
+	Team:"Zoho Platform",
+	assets:["Mobile","Laptop","Monitor","KeyBoard"]
+}	</textarea>
+	<br>
+	<br>
+	<select id="currentModule" onchange="fetchAllRecords(this)">
+		{{#each this.recordModules}}
+			{{#log generated_type}}{{/log}}
+    	   <option value="{{api_name}}">{{module_name}}</option>
+			}
+    	{{/each}}
+	</select>
+	<input type="button" value="Add New" onclick="TestCases.newRecord()"/></input>
+</script>
+<script id="listview" type="text/x-handlebars-template">
+	<br>
+	<label><input type="checkbox" name="openNewTab" id="openInNewTab"></input>Perform all actions in new tab</label>
+	<br>
+	<br>
+	<br>
+	<table id="table">
+        <tbody>
+        {{#each this}}
+        <tr>
+        	<td><input type="button" value="OPEN" onclick="TestCases.openRecord('{{this.id}}')"/></td>
+        	<td><input type="button" value="EDIT" onclick="TestCases.editRecord('{{this.id}}')"/></td>
+        	<td><input type="file" value="FILEUP" onclick="TestCases.clearFile('{{this.id}}')" onchange="TestCases.attachFile(this,'{{this.id}}')""/></td>
+        	<td><input type="button" value="Download" onclick="TestCases.downloadAttachment('{{this.id}}')"/></td>
+            <td>{{{ json this }}}</td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </script>
 </head>
 <body>
-	<body>
 	<div style="margin-bottom: 20px;">
 	<p id="TestStatus">In Progress...</p>
     <select id="sdkVersion">
@@ -46,8 +185,17 @@ $(document).ready(function(){
     	<option value="CustomButtonCreate">CustomButton Create</option>
     	<option value="CustomButtonEdit">CustomButton Edit</option>
     	<option value="CustomButtonList">CustomButton List</option>
+    	<option value="MobileTestCases">Mobile Widget Testing</option>
     </select>
     <button onclick="runTest()">Run Test</button>
+	</div>
+	<div id="Container" style="display:none">
+		<div id="moduleSelectionDiv">
+			
+		</div>
+    	<div id="RecordData">
+    		
+    	</div>
 	</div>
 </body>
 </html>

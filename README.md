@@ -43,9 +43,10 @@ To register Listeners with EmbededApp
 	
 Description
 --
-	DialerActive 	- Triggered everytime softphone window is toggled
+	DialerActive	- Triggered everytime softphone window is toggled
 	Dial 			- Triggered when Call icon inside ZohoCRM is clicked
 	PageLoad 		- Triggered When ever an entity Page (Detail page) is loaded
+	HistoryPopState	- Triggered when browser back is invoked in WebTab Widget with custom widget params
 
 Example
 --
@@ -57,6 +58,12 @@ Example
 	{
 		console.log(data);
 		//Custom Bussiness logic goes here
+	})
+
+	ZOHO.embeddedApp.on("HistoryPopState",function(data){
+    	console.log(data);
+
+		// Custom business logic code goes here.
 	})
 
 	/*
