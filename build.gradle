@@ -21,19 +21,17 @@ dependencies {
 	compile group: 'org.webjars', name: "$require_jarName", version: "$require_jarVersion"
 }
 
-task minifyJS << {
-    task temp (type: MinifyJsTask) {
-      	source = fileTree('lib/'){
-      		include '**/*.js'
-      	}
-      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
-	closure {
-		warningLevel = 'QUIET'
-		compilerOptions.languageIn = 'ECMASCRIPT5'
-	}
-    }
-    tasks.temp.execute()
+task createJSSDK (type: MinifyJsTask) {
+	      	source = fileTree('lib/'){
+	      		include '**/*.js'
+	      	}
+	      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
+		closure {
+			warningLevel = 'QUIET'
+			compilerOptions.languageIn = 'ECMASCRIPT5'
+			}
 }
+
 
 task downloadJar(type: Copy) {
 	group 'dependentJS'
@@ -57,21 +55,23 @@ task unzipJar(type: Copy , dependsOn:downloadJar) {
 	into "$tempDir"
 }
 
-task downloadDepJars( dependsOn:unzipJar) << {
-	group 'dependentJS'
-	description 'Download thirdparty js dependencies'
-	copy{
-			from("$tempDir/META-INF/resources/webjars/jasmine/$jasmin_jarVersion/lib/jasmine-core/") {
-	 			include "*.js" 
-	 			include "*.css" 
-	 		}
-			into "$testFolder/lib/jasmine"	
+task downloadDepJars( dependsOn:unzipJar){
+	doLast 
+	{
+		group 'dependentJS'
+		description 'Download thirdparty js dependencies'
+		copy{
+				from("$tempDir/META-INF/resources/webjars/jasmine/$jasmin_jarVersion/lib/jasmine-core/") {
+		 			include "*.js" 
+		 			include "*.css" 
+		 		}
+				into "$testFolder/lib/jasmine"	
+		}
+		copy{
+				from("$tempDir/META-INF/resources/webjars/$require_jarName/$require_jarVersion/") {
+		 			include "*.js" 
+		 		}
+				into "$testFolder/lib/require"	
+		}
 	}
-	copy{
-			from("$tempDir/META-INF/resources/webjars/$require_jarName/$require_jarVersion/") {
-	 			include "*.js" 
-	 		}
-			into "$testFolder/lib/require"	
-	}
-	
 }
