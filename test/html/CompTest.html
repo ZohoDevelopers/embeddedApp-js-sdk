@@ -163,6 +163,12 @@ function initWidgetTest(){
         	<td><input type="button" value="EDIT" onclick="TestCases.editRecord('{{this.id}}')"/></td>
         	<td><input type="file" value="FILEUP" onclick="TestCases.clearFile('{{this.id}}')" onchange="TestCases.attachFile(this,'{{this.id}}')""/></td>
         	<td><input type="button" value="Download" onclick="TestCases.downloadAttachment('{{this.id}}')"/></td>
+        	<td>
+        	{{#if this.Email}}
+        	{{this.Email}}
+        	<input id="sendMail" type="button" value="SendMail" onclick="TestCases.sendMail($('#currentModule').val(),'{{this.id}}','{{this.Created_By.name}}','{{this.Full_Name}}','{{this.Email}}',this)"><p></p>
+        	{{/if}}
+        	</td>
             <td>{{{ json this }}}</td>
         </tr>
         {{/each}}

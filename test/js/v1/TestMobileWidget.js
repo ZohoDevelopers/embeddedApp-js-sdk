@@ -150,7 +150,7 @@ TestCases.openWidget = function()
 {
 	var message = $("#openWidgetData").val().trim();
 	var moduleName = $("#currentWebTab").val();
-	ZOHO.CRM.UI.Widget.open({Entity:moduleName,Message:message})
+	ZOHO.CRM.UI.WebTab.open({Entity:moduleName,Message:message})
 }
 
 
@@ -181,5 +181,32 @@ TestCases.editRecord = function(recordID)
 	ZOHO.CRM.UI.Record.edit(config)
 	.then(function(data){
 	    console.log(data)
+	})
+};
+
+TestCases.sendMail = function(Module,id,from_name,to_name,email,currentRow)
+{
+	ZOHO.CRM.META.EMAIL.getAvailableFromAliases()
+	.then(function(data){
+		var config = {
+		    "Entity": Module,
+		    "RecordID": id,
+		    "APIData":{
+		        "data": [{
+		            "from":{"user_name": from_name,"email": data.from_address_details[0].email},
+		            "to": [{"user_name": to_name,"email": email}],
+		            "subject": "test",
+		            "content": "Hi "+ to_name + "\n\nWelcome to ProfessionalCoaching..\n\nThanks,\n" + from_name,
+		            "mail_format": "text",
+		            "paper_type": "USLetter",
+		            "view_type": "portrait",
+		            "org_email": false
+		        }]
+		    }
+		}
+		ZOHO.CRM.API.sendMail(config)
+		.then(function(data){
+			 $(currentRow).siblings("p").text(data.data[0].message)
+		})
 	})
 };
