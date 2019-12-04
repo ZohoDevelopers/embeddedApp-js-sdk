@@ -110,6 +110,12 @@ $(document).ready(function(){
 
 		
 	}
+	$("#closeReload").click(function(){
+		ZOHO.CRM.UI.Popup.closeReload().then(console.log)
+	})
+	$("#close").click(function(){
+		ZOHO.CRM.UI.Popup.close().then(console.log)
+	})
 });
 function initWidgetTest(){
 	var script = document.createElement("script");
@@ -166,7 +172,13 @@ function initWidgetTest(){
         	<td>
         	{{#if this.Email}}
         	{{this.Email}}
-        	<input id="sendMail" type="button" value="SendMail" onclick="TestCases.sendMail($('#currentModule').val(),'{{this.id}}','{{this.Created_By.name}}','{{this.Full_Name}}','{{this.Email}}',this)"><p></p>
+        	<input id="sendMail" type="button" value="SendMail" onclick="TestCases.sendMailMob($('#currentModule').val(),'{{this.id}}','{{this.Created_By.name}}','{{this.Full_Name}}','{{this.Email}}',this)"><p></p>
+        	{{/if}}
+        	</td>
+        	<td>
+        	{{#if this.Email}}
+        	{{this.Email}}
+        	<input id="sendMailFrom@" type="button" value="SendMailFrom@" onclick="TestCases.sendMailMobFromAlias($('#currentModule').val(),'{{this.id}}','{{this.Created_By.name}}','{{this.Full_Name}}','{{this.Email}}',this)"><p></p>
         	{{/if}}
         	</td>
             <td>{{{ json this }}}</td>
@@ -178,6 +190,10 @@ function initWidgetTest(){
 </head>
 <body>
 	<div style="margin-bottom: 20px;">
+		<div align="right">
+			<button id="close">CLOSE</button>
+			<button id="closeReload">CLOSE RELOAD</button>
+		</div>
 	<p id="TestStatus">In Progress...</p>
     <select id="sdkVersion">
     	<option value="v1">v1</option>
