@@ -32,12 +32,10 @@ describe("SDK Testing", function() {
 		}
 		else if(actionType === 'populate')
 		{
-			ZOHO.CRM.UI.Record.populate(TestSpec.recordData)
-			.then(function(data){
-				expect(data).toBe(true);
+			TestCases.populate(TestSpec.recordData,function(result){
+				expect(result).toBe(true);
 				done();
-			})
-			
+			});
 		}
 	});
 });
