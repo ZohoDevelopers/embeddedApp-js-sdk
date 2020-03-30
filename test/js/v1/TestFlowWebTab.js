@@ -20,6 +20,16 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 			done();
 		});
 	});
+	/*
+	 * insert Campaigns
+	 */
+	it("insert record in Campaigns module",function(done)
+	{
+		TestCases.insertCampaigns("Campaigns",{"Campaign_Name": "campaign"+Date.now(),"type":"Conference"},function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
 	/* 
 	 * add notes to the created record
 	 */
@@ -30,27 +40,32 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 			done();
 		});
 	});
-	/* 
-	 * attach File
+	/*
+	 * update record
 	 */
-	it("attachFile", function(done)
-	{
-		var content = {hello: "world"};
-		var blob = new Blob([JSON.stringify(content, null, 2)], {type : 'application/json'});
-		TestCases.attachFile("Leads",TestSpec.recordID,blob,function(result){
+	it("update record",function(done){
+		TestCases.updateRecord("Leads",TestSpec.recordID,TestSpec.recordData,function(result){
 			expect(result).toBe(true);
 			done();
-		});
+		})
 	});
 	/*
-	 * insert products
+	 * update voiceURL
 	 */
-	it("insert record in products module",function(done)
-	{
-		TestCases.insertProduct("Products",{"Product_Name": "product"+Date.now()},function(result){
+	it("update voice url",function(done){
+		TestCases.updateVoiceURL(TestSpec.recordID,TestSpec.voiceURL,function(result){
 			expect(result).toBe(true);
 			done();
-		});
+		})
+	});
+	/*
+	 * execute custom function
+	 */
+	it("executeFunction",function(done){
+		TestCases.executeFunction(function(result){
+			expect(result).toBe(true);
+			done();
+		})
 	});
 	/*
 	 * update relatedlist
@@ -59,7 +74,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 		var APIData = {
 				Description:"Test description"
 			 }
-		TestCases.updateRelatedRecords("Leads",TestSpec.recordID,"Products",TestSpec.productId,APIData,function(result){
+		TestCases.updateRelatedRecords("Leads",TestSpec.recordID,"Campaigns",TestSpec.campaignId,APIData,function(result){
 			expect(result).toBe(true);
 			done();
 		})
@@ -69,42 +84,30 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 	 */
 	it("uploadFile",function(done){
 		var file = new File(['foo', 'bar'], 'foobar.txt');
-		var fileType = file.type;
-		var config = {
-		   "CONTENT_TYPE": "multipart",
-		   "PARTS": [{
-		       "headers": {
-		           "Content-Disposition": "file;"
-		       },
-		       "content": "__FILE__"
-		   }],
-		   "FILE": {
-		       "fileParam": "content",
-		       "file": file
-		   }
-		}
-		TestCases.uploadFile(config,function(result){
+		// var fileType = file.type;
+		// var config = {
+		//    "CONTENT_TYPE": "multipart",
+		//    "PARTS": [{
+		//        "headers": {
+		//            "Content-Disposition": "file;"
+		//        },
+		//        "content": "__FILE__"
+		//    }],
+		//    "FILE": {
+		//        "fileParam": "content",
+		//        "file": file
+		//    }
+		// }
+		TestCases.uploadFile(file,function(result){
 			expect(result).toBe(true);
 			done();
 		})
 	})
 	/*
-	 * getFile
-	 */
-	it("getFile",function(done){
-		var config = {
-				id:TestSpec.uploadFileID
-		}
-		TestCases.getFile(config,function(result){
-			expect(result).toBe(true);
-			done();
-		})
-	});
-	/*
 	 * delink related record
 	 */
 	it("delinkRelatedRecord",function(done){
-		TestCases.delinkRelatedRecord("Leads",TestSpec.recordID,"Products",TestSpec.productId,function(result){
+		TestCases.delinkRelatedRecord("Leads",TestSpec.recordID,"Campaigns",TestSpec.campaignId,function(result){
 			expect(result).toBe(true);
 			done();
 		})
@@ -150,6 +153,58 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 		});
 	});
 	/*
+	 * get all roles
+	 */
+	it("get All roles", function(done)
+	{
+		TestCases.getAllRoles(function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * get RoleDetails
+	 */
+	it("get role details", function(done)
+	{
+		TestCases.getRole(TestSpec.roleId,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * getFile
+	 */
+	it("getFile",function(done){
+		var config = {
+				id:TestSpec.uploadFileID
+		}
+		TestCases.getFile(config,function(result){
+			expect(result).toBe(true);
+			done();
+		})
+	});
+	/*
+	 * get getAvailableFromAliases
+	 */
+	it("get Available From Aliases", function(done)
+	{
+		TestCases.getAvailableFromAliases(function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
+	 * send Email
+	 */
+	it("send Email", function(done)
+	{
+		TestCases.sendMail("Leads",TestSpec.recordID,TestSpec.mailData,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/*
 	 * upsert api without duplicate fields
 	 */
 	it("upsert without duplicate fields", function(done)
@@ -165,7 +220,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
 	it("upsert with duplicate fields (Website)", function(done)
 	{
 		TestCases.upsertWithDuplicateField("Leads",TestSpec.upsertData,function(result){
-			expect(result).toBe(true);
+			expect(result).toBe(false);
 			done();
 		});
 	});
@@ -332,6 +387,12 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   			done();
   		});
   	});
+  	it("checkHtttpDeleteRequst",function(done){
+  		TestCases.checkHttpDeleteRequest(TestSpec.deleteUrl,function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
   	it("getFields",function(done){
   		TestCases.getFields("Leads",function(result){
   			expect(result).toBe(true);
@@ -340,24 +401,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   	});
   	it("getModules",function(done){
   		TestCases.getModules("Leads",function(result){
-  			expect(result).toBe(true);
-  			done();
-  		});
-  	});
-  	it("getAssignmentRules",function(done){
-  		TestCases.getAssignmentRules("Leads",function(result){
-  			expect(result).toBe(true);
-  			done();
-  		});
-  	});
-  	it("getAssignmentRules",function(done){
-  		TestCases.getAssignmentRules("Leads",function(result){
-  			expect(result).toBe(true);
-  			done();
-  		});
-  	});
-  	it("getAssignmentRules",function(done){
-  		TestCases.getAssignmentRules("Leads",function(result){
   			expect(result).toBe(true);
   			done();
   		});
@@ -382,12 +425,18 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   		})
   	});
   	it("searchRecord",function(done){
-  		TestCases.Search("Leads","email","uk@gmail.com",function(result){
+  		TestCases.Search("Leads","email","anandkumar.j@zohocorp.com",function(result){
   			expect(result).toBe(true);
   			done();
   		});
   	});
-  	
+  	it("coql",function(done){
+  		TestCases.coql("Leads",function(result){
+  			expect(result).toBe(true);
+  			done();
+  		});
+  	});
+
   	it("customViews",function(done){
   		TestCases.getCustomViews(undefined,function(result){
   			expect(result).toBe(true);
@@ -435,12 +484,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   	
   	
   	
-	it("unAuthenticated Invoke Connector",function(done){
-  		TestCases.invokeUnAuthConnector(function(result){
-  			expect(result).toBe(true);
-  			done();
-  		});
-  	});
   	it("invokeConnectorWithoutDynamic",function(done){
   		TestCases.invokeConnectorWithoutDynamic(TestSpec.connectorWithoutDynamic,{},function(result){
   			expect(result).toBe(true);
@@ -448,9 +491,33 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 4000;
   		});
   	});
   	it("invokeConnectorWithoutDynamicValue",function(done){
-  		TestCases.invokeConnectorwithDynamic(TestSpec.connectorWithDynamic,{company:TestSpec.company,lastname:TestSpec.lastname},function(result){
+  		TestCases.invokeConnectorwithDynamic(TestSpec.connectorWithDynamic,{module:TestSpec.module,recordID:TestSpec.recordID},function(result){
   			expect(result).toBe(true);
   			done();
   		});
   	});
+
+  	/*
+	 * Insert a new Record into the system
+	 */
+	it("Insert Lead", function(done)
+	{
+		TestCases.insertRecord("Leads",TestSpec.recordData,function(result,recordID){
+			TestSpec.recordID = recordID;
+			expect(result).toBe(true);
+			done();
+		});
+	});
+	/* 
+	 * attach File
+	 */
+	it("attachFile", function(done)
+	{
+		var content = {hello: "world"};
+		var blob = new Blob([JSON.stringify(content, null, 2)], {type : 'application/json'});
+		TestCases.attachFile("Leads",TestSpec.recordID,blob,function(result){
+			expect(result).toBe(true);
+			done();
+		});
+	});
 });

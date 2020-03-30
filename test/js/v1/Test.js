@@ -10,17 +10,21 @@ var TestSpec={
 	relatedID:undefined,
 	onLoadData:undefined,
 	profileId:undefined,
+	roleID:undefined,
 	approvalID:undefined,
 	blueprintId:undefined,
-	productId:undefined,
+	campaignId:undefined,
 	relationID:undefined,
 	uploadFileID:undefined,
+	emailID:undefined,
+	currentUser:undefined,
 	recordData : {
 	        "Company": "Zylker",
 	        "Last_Name": "Peterson",	
 	        "Annual_Revenue":"500",
 	        "Description":"Populating test data",
-	        "Phone":"85663655785"
+	        "Phone":"85663655785",
+	        "Email":"anandkumar.j@zohocorp.com"
 	  },
 	upsertData : {
 		"Company": "Zylker1",
@@ -30,26 +34,50 @@ var TestSpec={
         "Phone":"856636557852",
         "Website" : "https://www.google.com"
 	},
-	orgVariable1:{key:"auditextension.PluginName",value:"AutomationExtension"},
-	orgVariable2:{key:"auditextension.PluginPurpose",value:"QATesting"},
-	multipleOrgVariable : {apiKeys:["auditextension.PluginName","auditextension.PluginPurpose"]},
+	mailData : {
+		"from":{"user_name": "jak","email": undefined},
+		"to": [{"user_name": "User","email": undefined}],
+        "subject": "test",
+        "content": "Hi User,\n\nWelcome to Platform Testing..\n\nThanks,\njak",
+        "mail_format": "text",
+        "paper_type": "USLetter",
+        "view_type": "portrait",
+        "org_email": false
+	},
+	voiceURL:"https://testurl.com/calls/1772649/recording/Aas354465.mp3",
+	orgVariable1:{key:"mob",value:"mobileappvar"},
+	orgVariable2:{key:"plat",value:"Platform"},
+	multipleOrgVariable : {apiKeys:["mob","plat"]},
 	url: "http://mockbin.org/bin/9b6c1e8a-ebf8-4fc8-a729-46175eb2c05c",
 	getUrl: "https://httpbin.org/get",
 	postUrl: "https://httpbin.org/post",
 	putUrl :"https://httpbin.org/put",
 	patchUrl:"https://httpbin.org/patch",
+	deleteUrl:"https://httpbin.org/delete",
 	connector:"unittest0.unittest.getfiles",
 	fileId : "0B-EvY2Wt1MdxM1NxQjRxcG9GbXc",
 	connectorFile : "unittest0.unittest.getfile",
-	connectorWithDynamic : "auditextension.zohoconnector.createleads",
-	connectorWithoutDynamic : "auditextension.zohoconnector.getallrecords",
+	connectorWithDynamic : "zohocrm1578309953411.getbyid",
+	connectorWithoutDynamic : "zohocrm1578309953411.get",
 	company : "company",
 	lastname : "lastname"
 };
 const TestCases ={
 		
 };
-
+TestCases.getCurrentUser = function(callBack){
+	ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
+		if(data)
+		{
+			TestSpec.currentUser = data.users[0].email;
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
 TestCases.getMultipleRecord = function(module,recordIDs,callBack)
 {
 		ZOHO.CRM.API.getRecord({Entity:module,RecordID:recordIDs})
@@ -123,13 +151,13 @@ TestCases.attachFile = function(module,recordID,blob,callBack)
 		}
 	});
 }
-TestCases.insertProduct = function(module,recordData,callBack)
+TestCases.insertCampaigns = function(module,recordData,callBack)
 {
 	ZOHO.CRM.API.insertRecord({Entity:module,APIData:recordData})
 	.then(function(data){
 		if(data && typeof(data) === 'object' && data.data instanceof Array )
 		{
-			TestSpec.productId = data.data[0].details.id;
+			TestSpec.campaignId = data.data[0].details.id;
 			callBack(true);
 		}
 		else
@@ -137,6 +165,37 @@ TestCases.insertProduct = function(module,recordData,callBack)
 			callBack(false);
 		}
 	});
+}
+TestCases.updateRecord = function(module,recordID,recordData,callBack)
+{
+	 recordData.id = recordID;
+	 recordData.Company = "JAK";
+	 ZOHO.CRM.API.updateRecord({Entity:module,APIData:recordData})
+	 .then(function(data){
+		 if(data && typeof(data) === 'object' && data.data instanceof Array )
+			{
+				TestSpec.relationID = data.data[0].details.id;
+				callBack(true);
+			}
+			else
+			{
+				callBack(false);
+			}
+	 })
+}
+TestCases.updateVoiceURL = function(recordID,voiceURL,callBack)
+{
+	 ZOHO.CRM.API.updateVoiceURL({RecordID:module,VoiceURL:voiceURL})
+	 .then(function(data){
+		 if(data && typeof(data) === 'object' && data.code==='SUCCESS')
+			{
+				callBack(true);
+			}
+			else
+			{
+				callBack(false);
+			}
+	 })
 }
 TestCases.updateRelatedRecords = function(module,recordID,relatedlistName,relatedRecordID,apidata,callBack)
 {
@@ -234,21 +293,6 @@ TestCases.uploadFile = function(config,callBack)
 			callBack(false);
 		}
 	})
-}
-TestCases.getFile = function(config,callBack)
-{
-	ZOHO.CRM.API.getFile(config)
-	.then(function(data){
-		if(data && typeof(data) ==='string' && data==="foobar")
-		{
-			callBack(true);
-		}
-		else
-		{
-			callBack(false);
-		}
-	})
-	
 }
 TestCases.upsertRecordWithoutDuplicate = function(module,upsertData,callBack)
 {
@@ -349,6 +393,21 @@ TestCases.getApprovalHistory = function(callBack)
 		}
 	})
 }
+TestCases.getFile = function(config,callBack)
+{
+	ZOHO.CRM.API.getFile(config)
+	.then(function(data){
+		if(data && typeof(data) === 'object' && data.type==="application/x-download")
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	})
+	
+}
 TestCases.getAllProfiles = function(module,recordID,callBack)
 {
 	ZOHO.CRM.API.getAllProfiles().then(function(data){
@@ -376,25 +435,67 @@ TestCases.getProfile = function(profileID,callBack)
 		}
 	});
 }
-TestCases.deleteRecord=function(module,recordID,callBack){
-		  if(!recordID){
-				callBack(false);
-		  }
-		  else{
+TestCases.getAllRoles = function(callBack)
+{
+	ZOHO.CRM.API.getAllRoles().then(function(data){
+		if(data && typeof(data) === 'object' && data.roles instanceof Array )
+		{
+			TestSpec.roleID = data.roles[0].id;
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getRole = function(roleID,callBack)
+{
+	ZOHO.CRM.API.getRoleById({id:roleID}).then(function(data){
+		if(data && typeof(data) === 'object' && data.roles instanceof Array )
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.getAvailableFromAliases = function(callBack)
+{
+	ZOHO.CRM.META.EMAIL.getAvailableFromAliases().then(function(data){
+		if(data && typeof(data) === 'object' && data.from_address_details instanceof Array )
+		{
+			TestSpec.emailID = data.from_address_details[0].email;
+			TestSpec.mailData.from.email=TestSpec.emailID;
+			TestSpec.mailData.to[0].email=TestSpec.emailID;
+			callBack(true);
+		}
+		else
+		{
+			TestSpec.emailID = TestSpec.currentUser;
+			TestSpec.mailData.from.email=TestSpec.emailID;
+			TestSpec.mailData.to[0].email=TestSpec.emailID;
+			callBack(false);
+		}
+	});	
+}
+TestCases.sendMail = function(module,recordID,mailData,callBack)
+{
+	ZOHO.CRM.API.sendMail({Entity:module, RecordID:recordID, APIData:{data:[mailData]}}).then(function(data){
+		if(data && typeof(data) === 'object' && data.data && data.data instanceof Array && data.data.length > 0 && data.data[0].code==='SUCCESS')
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});	
+}
 
-			  ZOHO.CRM.API.deleteRecord({Entity:module,RecordID: recordID})
-				.then(function(data){
-					if(data && typeof(data) === 'object' && data.data && data.data instanceof Array && data.data.length > 0 && data.data[0].code==='SUCCESS'){
-						callBack(true);
-					}
-					else
-					{
-						callBack(false);
-					}
-				})	
-		  }
-		  
-};
+
 TestCases.verifyRecord = function(module,recordID,recordData,callBack){
 		  if(!recordID){
 				callBack(false);
@@ -420,6 +521,16 @@ TestCases.verifyRecord = function(module,recordID,recordData,callBack){
 
 			})
 		  }
+};
+TestCases.populate = function(recordData,callBack){ 
+  	ZOHO.CRM.UI.Record.populate(recordData).then(function(data){
+		if(data){
+			callBack(true);
+		}
+		else{
+			callBack(false);
+		}
+	})
 };
 TestCases.getRecord = function(module,recordID,callBack){
 	  if(!recordID){
@@ -496,16 +607,21 @@ TestCases.getOrgVariable = function(variable,callBack)
 			}
 	});
 }
-TestCases.getMultipleOrgvariable = function(multipleorgvariable,callBack){
-	ZOHO.CRM.API.getOrgVariable(TestSpec.multipleOrgVariable).then(function(data){
-		if(data && data.Success && (Object.keys(data.Success.content)).length === TestSpec.multipleOrgVariable.apiKeys.length)
-		{
-			callBack(true);
-		}
-		else
-		{
-			callBack(false);
-		}
+TestCases.getMultipleOrgvariable = function(multipleorgvariable,callBack)
+{
+	// ZOHO.CRM.API.getOrgVariable(multipleorgvariable).then(function(data)
+	// {
+	// 	if(data && data.Success && (Object.keys(data.Success.Content)).length === TestSpec.multipleOrgVariable.apiKeys.length)
+	// 	{
+	// 		callBack(true);
+	// 	}
+	// 	else
+	// 	{
+	// 		callBack(false);
+	// 	}
+	// });
+	ZOHO.CRM.API.getOrgVariable(multipleorgvariable).then(function(data){
+		console.log(data);
 	});
 }
 TestCases.checkHttpGetRequest = function(url,callBack){
@@ -584,6 +700,25 @@ TestCases.checkHttpPatchRequest = function(url,callBack){
 	});
 	
 }
+TestCases.checkHttpDeleteRequest = function(url,callBack){
+	var request ={
+		url : url
+	}
+	
+	ZOHO.CRM.HTTP.delete(request).then(function(responseData)
+	{
+		var response = JSON.parse(responseData);
+		if(response && response.url && response.url === url)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false)
+		}
+	});
+	
+}
 TestCases.getFields = function(module,callBack){
 	ZOHO.CRM.META.getFields({Entity:module}).then(function(result){
 		if(result)
@@ -620,18 +755,6 @@ TestCases.getAssignmentRules = function(module,callBack){
 		}
 	});
 }
-TestCases.getCurrentUser = function(callBack){
-	ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
-		if(data)
-		{
-			callBack(true);
-		}
-		else
-		{
-			callBack(false);
-		}
-	});
-}
 TestCases.getOrgInfo = function(callBack)
 {
 	ZOHO.CRM.CONFIG.getOrgInfo().then(function(data){
@@ -658,15 +781,20 @@ TestCases.Search = function(module,type,query,callBack){
 	   	}
 	})
 }
-TestCases.invokeUnAuthConnector = function(callBack){
-	ZOHO.CRM.CONNECTOR.invokeAPI("UnAuthConnectorNameSpace",{})
-	.then(function(data){
-			callBack(false);
+TestCases.coql = function(module,callBack){
+	var config = {
+		"select_query": "select Last_Name, First_Name, Full_Name from "+module+" where Last_Name is not null limit 2"
+	}
+	ZOHO.CRM.API.coql(config).then(function(data){
+	    if(data)
+	   	{
+	   		callBack(true);
+	   	}
+	   	else
+	   	{
+	   		callBack(false);
+	   	}
 	})
-	.catch(function(e){
-		
-		callBack(true);
-	});
 }
 TestCases.invokeConnectorWithoutDynamic = function(apiname,data,callBack){
 	ZOHO.CRM.CONNECTOR.invokeAPI(apiname,{})
@@ -683,6 +811,19 @@ TestCases.invokeConnectorWithoutDynamic = function(apiname,data,callBack){
 }
 TestCases.invokeConnectorwithDynamic = function(apiname,data,callBack){
 	ZOHO.CRM.CONNECTOR.invokeAPI(apiname,data)
+	.then(function(data){
+		if(data)
+		{
+			callBack(true);
+		}
+		else
+		{
+			callBack(false);
+		}
+	});
+}
+TestCases.executeFunction = function(callBack){
+	ZOHO.CRM.FUNCTIONS.execute("myfirstfunction1531292394914",{"arguments": JSON.stringify({"mailid":"test@zohotest.com"})})
 	.then(function(data){
 		if(data)
 		{
