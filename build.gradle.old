@@ -1,0 +1,77 @@
+plugins {
+    id 'com.eriwen.gradle.js' version '2.14.1'
+}
+import com.eriwen.gradle.js.tasks.MinifyJsTask
+apply plugin:'java'
+
+ext.tempDir='temp'
+ext.jasmin_jarName='jasmine'
+ext.jasmin_jarVersion='2.5.1'
+
+ext.require_jarName='requirejs'
+ext.require_jarVersion='2.2.0'
+
+ext.extension='.jar'
+ext.testFolder='test'
+repositories {
+    mavenCentral()
+}
+dependencies {
+	compile group: 'org.webjars.bower', name: "$jasmin_jarName", version: "$jasmin_jarVersion"
+	compile group: 'org.webjars', name: "$require_jarName", version: "$require_jarVersion"
+}
+
+task minifyJS << {
+    task temp (type: MinifyJsTask) {
+      	source = fileTree('lib/'){
+      		include '**/*.js'
+      	}
+      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
+	closure {
+		warningLevel = 'QUIET'
+		compilerOptions.languageIn = 'ECMASCRIPT5'
+	}
+    }
+    tasks.temp.execute()
+}
+
+task downloadJar(type: Copy) {
+	group 'dependentJS'
+	description 'Download thirdparty js dependencies'
+ 
+	from configurations.runtime
+	into "$tempDir"
+}
+
+task unzipJar(type: Copy , dependsOn:downloadJar) {
+	group 'dependentJS'
+	description 'Download thirdparty js dependencies'
+	from(zipTree("$tempDir/$jasmin_jarName-$jasmin_jarVersion$extension")) 
+		{ 
+			include "META-INF/resources/webjars/$jasmin_jarName/$jasmin_jarVersion/lib/jasmine-core/*" 
+		}
+	from(zipTree("$tempDir/$require_jarName-$require_jarVersion$extension")) 
+		{ 
+			include "META-INF/resources/webjars/$require_jarName/$require_jarVersion/require.min.js"
+		}
+	into "$tempDir"
+}
+
+task downloadDepJars( dependsOn:unzipJar) << {
+	group 'dependentJS'
+	description 'Download thirdparty js dependencies'
+	copy{
+			from("$tempDir/META-INF/resources/webjars/jasmine/$jasmin_jarVersion/lib/jasmine-core/") {
+	 			include "*.js" 
+	 			include "*.css" 
+	 		}
+			into "$testFolder/lib/jasmine"	
+	}
+	copy{
+			from("$tempDir/META-INF/resources/webjars/$require_jarName/$require_jarVersion/") {
+	 			include "*.js" 
+	 		}
+			into "$testFolder/lib/require"	
+	}
+	
+}
