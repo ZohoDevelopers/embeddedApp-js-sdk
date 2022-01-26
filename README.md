@@ -3,7 +3,7 @@ JS SDK lib
 	https://github.com/ZohoDevelopers/embeddedApp-js-sdk/releases
 ### Latest Docs
 ---
-	http://help.zwidgets.com/help/v1.0.2/index.html
+	https://help.zwidgets.com/help/latest/index.html
 To register Listeners with EmbededApp
 --
 

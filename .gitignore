@@ -6,6 +6,7 @@ server/
 out/
 HelpDoc.zip
 server.zip
+widget_doc.tgz
 temp
 test/lib/*
 tempImpl
