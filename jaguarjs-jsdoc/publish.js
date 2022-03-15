@@ -287,7 +287,12 @@ exports.publish = function(taffyData, opts, tutorials) {
     helper.setTutorials(tutorials);
 
     data = helper.prune(data);
-    data.sort('longname, version, since');
+    data().each(function(doclet) {
+        const namespace = doclet.longname.split('.')[0];
+        doclet.dx_namespace = namespace || 'ZOHO';
+    });
+    data.sort('longname');
+    data.sort('dx_namespace logicaldesc');
     helper.addEventListeners(data);
 
     var sourceFiles = {};
