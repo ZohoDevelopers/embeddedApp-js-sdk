@@ -1,9 +1,7 @@
-JS SDK lib
+CDN URL
 ---
-	https://github.com/ZohoDevelopers/embeddedApp-js-sdk/releases
-### Latest Docs
----
-	https://help.zwidgets.com/help/latest/index.html
+	https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js
+
 To register Listeners with EmbededApp
 --
 
