@@ -13,10 +13,6 @@ To register Listeners with EmbededApp
 		console.log("Number Dialed");
 	});
 	
-	ZOHO.embeddedApp.on("PageLoad",function(data){
-		console.log(data);
-	});
-
 	ZOHO.embeddedApp.on("Notify", function (data) {
 		console.log("Client Script flyout notification", data);
 	});
@@ -24,6 +20,10 @@ To register Listeners with EmbededApp
 	ZOHO.embeddedApp.on("NotifyAndWait", function (data) {
 		console.log("Client Script synchronous flyout notification", data);
 		ZDK.Client.sendResponse(data.id, { choice: 'mail', value: 'example@zoho.com' });
+	});
+
+	ZOHO.embeddedApp.on("PageLoad",function(data){
+		console.log(data);
 	});
 
 	// Prints
@@ -51,9 +51,11 @@ To register Listeners with EmbededApp
 	
 Description
 --
-	DialerActive 	- Triggered everytime softphone window is toggled
-	Dial 			- Triggered when Call icon inside ZohoCRM is clicked
-	PageLoad 		- Triggered When ever an entity Page (Detail page) is loaded
+	DialerActive	- Triggered everytime softphone window is toggled
+	Dial	- Triggered when Call icon inside ZohoCRM is clicked
+	PageLoad	- Triggered when ever an entity Page (Detail page) is loaded
+	Notify	- Triggered when Client Script flyout notify call is triggered
+	NotifyAndWait	- Triggered when Client Script flyout notify call is triggered synchronously
 
 Example
 --
