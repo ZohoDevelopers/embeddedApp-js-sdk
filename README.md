@@ -19,7 +19,7 @@ To register Listeners with EmbededApp
 
 	ZOHO.embeddedApp.on("NotifyAndWait", function (data) {
 		console.log("Client Script synchronous flyout notification", data);
-		ZDK.Client.sendResponse(data.id, { choice: 'mail', value: 'example@zoho.com' });
+		$Client.sendResponse(data.id, { choice: 'mail', value: 'example@zoho.com' });
 	});
 
 	ZOHO.embeddedApp.on("PageLoad",function(data){
