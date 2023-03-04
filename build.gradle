@@ -23,7 +23,8 @@ dependencies {
 
 task createJSSDK (type: MinifyJsTask) {
 	      	source = fileTree('lib/'){
-	      		include '**/*.js'
+						include '**/ZSDK.js'
+	      		include '**/ZohoCrmHelper.js'
 	      	}
 	      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
 		closure {
