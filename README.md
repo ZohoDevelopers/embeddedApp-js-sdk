@@ -18,7 +18,7 @@ LICENSE
 JS SDK lib
 ---
 	https://github.com/ZohoDevelopers/embeddedApp-js-sdk/releases
-### Latest Docs
+Latest Docs
 ---
 	https://www.zohocrm.dev/explore/widgets/latest/jssdk
 To register Listeners with EmbededApp
