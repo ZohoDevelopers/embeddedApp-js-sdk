@@ -1,6 +1,6 @@
 CDN URL
 ---
-	https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js
+	https://live.zwidgets.com/js-sdk/1.5/ZohoEmbededAppSDK.min.js
 
 To register Listeners with EmbededApp
 --
