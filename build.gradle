@@ -17,62 +17,96 @@ repositories {
     mavenCentral()
 }
 dependencies {
-	compile group: 'org.webjars.bower', name: "$jasmin_jarName", version: "$jasmin_jarVersion"
-	compile group: 'org.webjars', name: "$require_jarName", version: "$require_jarVersion"
+    compile group: 'org.webjars.bower', name: "$jasmin_jarName", version: "$jasmin_jarVersion"
+    compile group: 'org.webjars', name: "$require_jarName", version: "$require_jarVersion"
 }
 
-task createJSSDK (type: MinifyJsTask) {
-	      	source = fileTree('lib/'){
-						include '**/ZSDK.js'
-	      		include '**/ZohoCrmHelper.js'
-	      	}
-	      	dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
-		closure {
-			warningLevel = 'QUIET'
-			compilerOptions.languageIn = 'ECMASCRIPT5'
-			}
+// 1. Transpile ESNext to ES5 using Babel
+task transpileJs(type: Exec) {
+    group = 'build'
+    description = 'Transpile ESNext JS to ES5 using Babel'
+    inputs.files fileTree('lib/'){
+        include '**/ZSDK.js'
+        include '**/ZohoCrmHelper.js'
+    }
+    outputs.dir "$buildDir/es5"
+    commandLine 'npx', 'babel', 'lib', '--out-dir', "$buildDir/es5"
 }
 
+import java.nio.file.Files
+
+// 2. Concatenate transpiled JS files in order
+task concatJs(dependsOn: transpileJs) {
+    group = 'build'
+    description = 'Concatenate transpiled JS files in order'
+
+    def sources = [
+        "$buildDir/es5/ZSDK.js",
+        "$buildDir/es5/ZohoCrmHelper.js"
+        // Add other files here in the correct order
+    ]
+    def outputDir = file("$buildDir/concat")
+    def outputFile = file("$outputDir/ZohoEmbededAppSDK.concat.js")
+
+    inputs.files sources.collect { file(it) }
+    outputs.file outputFile
+
+    doLast {
+        outputDir.mkdirs()
+        outputFile.text = sources.collect { file(it).text }.join('\n')
+    }
+}
+
+// 3. Minify concatenated JS files
+task createJSSDK(type: MinifyJsTask, dependsOn: concatJs) {
+    source = fileTree("$buildDir/concat") {
+        include "ZohoEmbededAppSDK.concat.js"
+    }
+    dest = "${buildDir}/js/ZohoEmbededAppSDK.min.js"
+    closure {
+        warningLevel = 'QUIET'
+        compilerOptions.languageIn = 'ECMASCRIPT5'
+    }
+}
 
 task downloadJar(type: Copy) {
-	group 'dependentJS'
-	description 'Download thirdparty js dependencies'
- 
-	from configurations.runtime
-	into "$tempDir"
+    group 'dependentJS'
+    description 'Download thirdparty js dependencies'
+    from configurations.runtime
+    into "$tempDir"
 }
 
 task unzipJar(type: Copy , dependsOn:downloadJar) {
-	group 'dependentJS'
-	description 'Download thirdparty js dependencies'
-	from(zipTree("$tempDir/$jasmin_jarName-$jasmin_jarVersion$extension")) 
-		{ 
-			include "META-INF/resources/webjars/$jasmin_jarName/$jasmin_jarVersion/lib/jasmine-core/*" 
-		}
-	from(zipTree("$tempDir/$require_jarName-$require_jarVersion$extension")) 
-		{ 
-			include "META-INF/resources/webjars/$require_jarName/$require_jarVersion/require.min.js"
-		}
-	into "$tempDir"
+    group 'dependentJS'
+    description 'Download thirdparty js dependencies'
+    from(zipTree("$tempDir/$jasmin_jarName-$jasmin_jarVersion$extension")) 
+        { 
+            include "META-INF/resources/webjars/$jasmin_jarName/$jasmin_jarVersion/lib/jasmine-core/*" 
+        }
+    from(zipTree("$tempDir/$require_jarName-$require_jarVersion$extension")) 
+        { 
+            include "META-INF/resources/webjars/$require_jarName/$require_jarVersion/require.min.js"
+        }
+    into "$tempDir"
 }
 
-task downloadDepJars( dependsOn:unzipJar){
-	doLast 
-	{
-		group 'dependentJS'
-		description 'Download thirdparty js dependencies'
-		copy{
-				from("$tempDir/META-INF/resources/webjars/jasmine/$jasmin_jarVersion/lib/jasmine-core/") {
-		 			include "*.js" 
-		 			include "*.css" 
-		 		}
-				into "$testFolder/lib/jasmine"	
-		}
-		copy{
-				from("$tempDir/META-INF/resources/webjars/$require_jarName/$require_jarVersion/") {
-		 			include "*.js" 
-		 		}
-				into "$testFolder/lib/require"	
-		}
-	}
+task downloadDepJars(dependsOn:unzipJar){
+    doLast 
+    {
+        group 'dependentJS'
+        description 'Download thirdparty js dependencies'
+        copy{
+                from("$tempDir/META-INF/resources/webjars/jasmine/$jasmin_jarVersion/lib/jasmine-core/") {
+         			include "*.js" 
+         			include "*.css" 
+         		}
+                into "$testFolder/lib/jasmine"	
+        }
+        copy{
+                from("$tempDir/META-INF/resources/webjars/$require_jarName/$require_jarVersion/") {
+         			include "*.js" 
+         		}
+                into "$testFolder/lib/require"	
+        }
+    }
 }

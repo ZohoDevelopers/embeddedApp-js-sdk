@@ -10,3 +10,4 @@ widget_doc.tgz
 temp
 test/lib/*
 tempImpl
+node_modules/
