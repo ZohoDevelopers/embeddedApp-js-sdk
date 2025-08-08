@@ -21,22 +21,36 @@ dependencies {
     compile group: 'org.webjars', name: "$require_jarName", version: "$require_jarVersion"
 }
 
-// 1. Transpile ESNext to ES5 using Babel
-task transpileJs(type: Exec) {
+// 1. Transpile ZSDK to ES5 using Babel (legacy ie11 support)
+task transpileZSDK(type: Exec) {
     group = 'build'
-    description = 'Transpile ESNext JS to ES5 using Babel'
-    inputs.files fileTree('lib/'){
-        include '**/ZSDK.js'
+    description = 'Transpile ZSDK.js to ES5'
+    inputs.file 'lib/ZSDK.js'
+    outputs.dir "$buildDir/es5"
+    doFirst {
+        file("$buildDir/es5").mkdirs()
+    }
+    commandLine 'npx', 'babel', 'lib/ZSDK.js', '--out-file', "$buildDir/es5/ZSDK.js"
+}
+
+// 2. Transpile ESNext to target browsers using Babel (modern browsers targets, see .babelrc.modern.json)
+task transpileModernJsLibs(type: Exec) {
+    group = 'build'
+    description = 'Transpile modern JS libs with specific browser targets'
+    inputs.files fileTree('lib/') {
         include '**/ZohoCrmHelper.js'
     }
     outputs.dir "$buildDir/es5"
-    commandLine 'npx', 'babel', 'lib', '--out-dir', "$buildDir/es5"
+    doFirst {
+        file("$buildDir/es5").mkdirs()
+    }
+    commandLine 'npx', 'babel', 'lib/ZohoCrmHelper.js', '--out-file', "$buildDir/es5/ZohoCrmHelper.js", '--config-file', './.babelrc.modern.json'
 }
 
 import java.nio.file.Files
 
-// 2. Concatenate transpiled JS files in order
-task concatJs(dependsOn: transpileJs) {
+// 3. Concatenate transpiled JS files in order
+task concatJs(dependsOn: [transpileZSDK, transpileModernJsLibs]) {
     group = 'build'
     description = 'Concatenate transpiled JS files in order'
 
@@ -57,7 +71,7 @@ task concatJs(dependsOn: transpileJs) {
     }
 }
 
-// 3. Minify concatenated JS files
+// 4. Minify concatenated JS files
 task createJSSDK(type: MinifyJsTask, dependsOn: concatJs) {
     source = fileTree("$buildDir/concat") {
         include "ZohoEmbededAppSDK.concat.js"
@@ -66,6 +80,18 @@ task createJSSDK(type: MinifyJsTask, dependsOn: concatJs) {
     closure {
         warningLevel = 'QUIET'
         compilerOptions.languageIn = 'ECMASCRIPT5'
+    }
+
+    doLast {
+        // cleanup
+        def concatDir = file("$buildDir/concat")
+        def es5Dir = file("$buildDir/es5")
+        if (concatDir.exists()) {
+            Files.walk(concatDir.toPath()).sorted(Comparator.reverseOrder()).forEach { it.toFile().delete() }
+        }
+        if (es5Dir.exists()) {
+            Files.walk(es5Dir.toPath()).sorted(Comparator.reverseOrder()).forEach { it.toFile().delete() }
+        }
     }
 }
 
