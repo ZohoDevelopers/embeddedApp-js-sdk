@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/aadarshp31/embeddedApp-js-sdk#readme",
   "devDependencies": {
-    "@babel/cli": "^7.27.2",
-    "@babel/core": "^7.27.4",
-    "@babel/preset-env": "^7.27.2"
+    "@babel/cli": "7.27.2",
+    "@babel/core": "7.27.4",
+    "@babel/preset-env": "7.27.2"
   }
 }
