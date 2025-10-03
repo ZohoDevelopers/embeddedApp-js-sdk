@@ -1,0 +1,30 @@
+{
+  "name": "embeddedapp-js-sdk",
+  "version": "1.0.0",
+  "description": "CDN URL --- \thttps://live.zwidgets.com/js-sdk/1.5/ZohoEmbededAppSDK.min.js",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gradle clean && bash ./build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aadarshp31/embeddedApp-js-sdk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aadarshp31/embeddedApp-js-sdk/issues"
+  },
+  "homepage": "https://github.com/aadarshp31/embeddedApp-js-sdk#readme",
+  "devDependencies": {
+    "@babel/cli": "7.27.2",
+    "@babel/core": "7.27.4",
+    "@babel/preset-env": "7.27.2"
+  }
+}
